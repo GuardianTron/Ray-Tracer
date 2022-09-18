@@ -1,6 +1,6 @@
 "use strict";
 
-export default class Vector3D{
+export class Vector3D{
 
     constructor(x=0,y=0,z=0){
         this._vecAsArray = Array(3);
@@ -121,7 +121,7 @@ export default class Vector3D{
         }
         const resultArray = [];
         for(let i = 0; i< 3; i++){
-           resultArray.push(this._vecAsArray * scalar);
+           resultArray.push(this._vecAsArray[i] * scalar);
         }
 
         return new Vector3D(...resultArray);
@@ -168,3 +168,4 @@ export default class Vector3D{
     }
     
 }
+export default Vector3D;

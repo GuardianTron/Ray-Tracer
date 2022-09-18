@@ -1,7 +1,7 @@
  "use strict";
 
-import Vector3D from "./vector";
-import Color from "./color";
+import Vector3D from "./vector.js";
+import Color from "./color.js";
 
  class Shape{
 
@@ -33,6 +33,7 @@ import Color from "./color";
      */
 
     constructor(center,radius,color){
+        super();
         this.center = center;
         this.radius = radius;
         this.color = color;
@@ -46,6 +47,7 @@ import Color from "./color";
         if(!(color instanceof Color)){
             throw TypeError("Colors must be instance of Color.");
         }
+        this._color = color;
     }
     get center(){
         return this._center;
@@ -72,11 +74,11 @@ import Color from "./color";
     intersectsRayAt(originPoint,vector){
         super.intersectsRayAt(originPoint,vector);
         const directionVector = vector.subtract(originPoint);
-        const centerToOriginVector = this.center.subtract(originPoint);
+        const centerToOriginVector = originPoint.subtract(this.center);
         //quadratic forumula constants for intersection.
         const a = directionVector.dotProduct(directionVector);
         const b = 2 * centerToOriginVector.dotProduct(directionVector);
-        const c = centerToOriginVector.dotProduct(centerToOrigin) - Math.pow(this.radius,2);
+        const c = centerToOriginVector.dotProduct(centerToOriginVector) - Math.pow(this.radius,2);
 
         const disc = b*b - 4*a*c;
 

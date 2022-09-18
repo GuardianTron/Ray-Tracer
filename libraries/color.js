@@ -1,6 +1,6 @@
 "use strict";
 
-export default class Color{
+export class Color{
 
     constructor(r,g,b){
         this.r = r;
@@ -9,7 +9,7 @@ export default class Color{
     }
 
     _testValue(value){
-        if(isNan(value)){
+        if(isNaN(value)){
             throw new TypeError("Values must be of type number.");
         }
 
@@ -50,3 +50,5 @@ export default class Color{
         this._b = b;
     }
 }
+
+export default Color;
