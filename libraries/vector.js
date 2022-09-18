@@ -48,6 +48,13 @@ export default class Vector3D{
             throw new TypeError("Parameter must be of type Vector3D.");
         }
 
+    
+    }
+
+    _copyVectorToSelf(vec2){
+        this.x = vec2.x;
+        this.y = vec2.y;
+        this.z = vec2.z;
     }
 
     /**
@@ -130,6 +137,34 @@ export default class Vector3D{
         this._vectorTypeOrError(vec2);
         const negVec2 = vec2.multiplyByScalar(-1);
         return this.add(negVec2);
+    }
+
+
+
+    /**
+     * Adds second vector to self and stores results to self.
+     * @param {Vector3D} vec2 
+     */
+    addSelf(vec2){
+       this._copyVectorToSelf(this.add(vec2)); 
+    }
+
+    /**
+     * Multiplies the vector by scalar and store results to self.
+     * @param {Number} scalar 
+     */
+
+    multiplySelfByScalar(scalar){
+        this._copyVectorToSelf(this.multiplyByScalar(scalar));
+    }
+
+    /**
+     * Subtracts second vector from self and stores results to self.
+     * @param {Vector3D} vec2 
+     */
+
+    subtractSelf(vec2){
+        this._copyVectorToSelf(this.subtract(vec2));
     }
     
 }
