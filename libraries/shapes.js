@@ -83,3 +83,4 @@ import Vector3D from "./vector";
 
     }
  }
+ export {Shape,Sphere};
