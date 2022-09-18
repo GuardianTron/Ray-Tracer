@@ -1,6 +1,7 @@
  "use strict";
 
 import Vector3D from "./vector";
+import Color from "./color";
 
  class Shape{
 
@@ -26,15 +27,26 @@ import Vector3D from "./vector";
 
     /**
      * 
-     * @param {Vector3D} center 
-     * @param {Number} radius 
+     * @param {Vector3D} center -- The object's center.
+     * @param {Number} radius  -- The object's radius.
+     * @param {Color} color -- The object's color.
      */
 
-    constructor(center,radius){
+    constructor(center,radius,color){
         this.center = center;
         this.radius = radius;
+        this.color = color;
+    }
+    
+    get color(){
+        return this._color;
     }
 
+    set color(color){
+        if(!(color instanceof Color)){
+            throw TypeError("Colors must be instance of Color.");
+        }
+    }
     get center(){
         return this._center;
     }
