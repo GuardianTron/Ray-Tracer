@@ -5,7 +5,6 @@ import { TraceRay,  canvasToViewport } from "./libraries/raytrace.js";
 import { Color } from "./libraries/color.js";
 
 const canvas = document.getElementById("ray_canvas");
-const ctx = canvas.getContext('2d');
 const viewHeight = 1;
 const viewWidth = 1;
 const distance = 1;
@@ -17,17 +16,22 @@ const shapes = [
     new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0))
 ];
 
-for(let x = 0; x < canvas.width; x++){
-    for(let y = 0; y < canvas.height; y++){
-        const viewportRay = canvasToViewport(x,y,canvas.width,canvas.height,viewWidth,viewHeight,distance);
-        let color = TraceRay(origin,viewportRay,shapes);
-        if(color){
+rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes);
 
-            drawPixel(x,y,ctx,color);
+function rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes){
+    const ctx = canvas.getContext('2d');
+    for(let x = 0; x < canvas.width; x++){
+        for(let y = 0; y < canvas.height; y++){
+            const viewportRay = canvasToViewport(x,y,canvas.width,canvas.height,viewWidth,viewHeight,distance);
+            let color = TraceRay(origin,viewportRay,shapes);
+            if(color){
+
+                drawPixel(x,y,ctx,color);
+            }
         }
     }
 }
-console.log('Finished.');
+
 
 function drawPixel(x,y,ctx,color){
     const id = ctx.createImageData(1,1);
