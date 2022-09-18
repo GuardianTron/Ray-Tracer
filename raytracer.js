@@ -5,9 +5,6 @@ import { TraceRay,  canvasToViewport } from "./libraries/raytrace.js";
 import { Color } from "./libraries/color.js";
 
 const canvas = document.getElementById("ray_canvas");
-const viewHeight = 1;
-const viewWidth = 1;
-const distance = 1;
 const origin = new Vector3D(0,0,0);
 
 const shapes = [
@@ -16,10 +13,24 @@ const shapes = [
     new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0))
 ];
 
-rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes);
+const controls = document.getElementById('config');
+const submit_btn = document.getElementById('render_btn');
+controls.addEventListener('submit',(e)=>{
+    e.preventDefault();
+
+    const viewWidth = Number(controls.elements['view_width'].value);
+    const viewHeight = Number(controls.elements['view_height'].value);
+    const distance = Number(controls.elements['distance'].value);
+    console.log("Rendering", viewWidth,viewHeight,distance);
+    rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes);
+    console.log('Finished');
+});
+
+
 
 function rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes){
     const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     for(let x = 0; x < canvas.width; x++){
         for(let y = 0; y < canvas.height; y++){
             const viewportRay = canvasToViewport(x,y,canvas.width,canvas.height,viewWidth,viewHeight,distance);

@@ -7,6 +7,13 @@
         <canvas width="640" height="640" id="ray_canvas">
 
         </canvas>
+
+        <form id="config">
+            <label for="view_width">Viewport Width</label><input name="view_width" type="range" min="0.1" max="10" step=".01" value="1">
+            <label for="view_height">Viewport Height</label><input name="view_height" type="range" min="0.1" max="10" step=".01" value="1">
+            <label for="distance">Distance </label><input name="distance" type="range" min="0.1" max="10" step=".01" value="1">
+            <button form_id="config" id="render_btn">Render</button>
+        </form>
         <script type="module" src="raytracer.js"></script>
     </body>
 </html>
