@@ -31,25 +31,28 @@ controls.addEventListener('submit',(e)=>{
 function rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes){
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    const imageData = ctx.createImageData(canvas.width,canvas.height);
     for(let x = 0; x < canvas.width; x++){
         for(let y = 0; y < canvas.height; y++){
             const viewportRay = canvasToViewport(x,y,canvas.width,canvas.height,viewWidth,viewHeight,distance);
             let color = TraceRay(origin,viewportRay,shapes);
             if(color){
 
-                drawPixel(x,y,ctx,color);
+                drawPixel(x,y,imageData,color);
             }
         }
     }
+    ctx.putImageData(imageData,0,0);
 }
 
 
-function drawPixel(x,y,ctx,color){
-    const id = ctx.createImageData(1,1);
-    const d = id.data;
-    d[0] = color.r;
-    d[1] = color.g;
-    d[2] = color.b;
-    d[3] = 255;
-    ctx.putImageData(id,x,y);
+function drawPixel(x,y,imageData,color){
+
+    const d = imageData.data;
+    const index = 4*(y * imageData.width + x);
+    d[index] = color.r;
+    d[index + 1] = color.g;
+    d[index + 2] = color.b;
+    d[index + 3] = 255;
+
 }
