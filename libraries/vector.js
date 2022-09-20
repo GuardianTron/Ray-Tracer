@@ -3,25 +3,25 @@
 export class Vector3D{
 
     constructor(x=0,y=0,z=0){
-        this._vecAsArray = Array(3);
+
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     get x(){
-        return this._vecAsArray[0];
+        return this._x;
     }
 
     set x(x){
         if(isNaN(x)){
             throw new TypeError('X must be type Number.');
         }
-        this._vecAsArray[0] = x;
+        this._x = x;
     }
 
     get y(){
-        return this._vecAsArray[1];
+        return this._y;
     }
 
 
@@ -29,18 +29,18 @@ export class Vector3D{
         if(isNaN(y)){
             throw new TypeError('y must be type Number.');
         }
-        this._vecAsArray[1] = y;
+        this._y = y;
     }
 
     get z(){
-        return this._vecAsArray[2];
+        return this._z;
     }
 
     set z(z){
         if(isNaN(z)){
             throw new TypeError('z must be type Number.');
         }
-        this._vecAsArray[2] = z;
+        this._z = z;
     }
 
     _vectorTypeOrError(vec2){
@@ -75,11 +75,7 @@ export class Vector3D{
     dotProduct(vec2){
         this._vectorTypeOrError(vec2);
         
-        const vec2Array = vec2.toArray();
-        let dp = 0;
-        for(let i = 0; i < 3; i++){
-            dp += this._vecAsArray[i] * vec2Array[i];
-        }
+        let dp = this.x * vec2.x + this.y * vec2.y + this.z * vec2.z;
 
         return dp;
     }
@@ -101,12 +97,10 @@ export class Vector3D{
      */    
     add(vec2){
         this._vectorTypeOrError(vec2);
-        const resultArray = [];
-        const vec2Array = vec2.toArray();
-        for(let i = 0; i < 3; i++){
-            resultArray.push(this._vecAsArray[i] + vec2Array[i]);
-        }
-        return new Vector3D(...resultArray);
+        const x = this.x + vec2.x;
+        const y = this.y + vec2.y;
+        const z = this.z + vec2.z;
+        return new Vector3D(x,y,z);
 
     }
 
@@ -119,12 +113,10 @@ export class Vector3D{
         if(isNaN(scalar)){
             throw new TypeError("Scalars must be of type number.");
         }
-        const resultArray = [];
-        for(let i = 0; i< 3; i++){
-           resultArray.push(this._vecAsArray[i] * scalar);
-        }
-
-        return new Vector3D(...resultArray);
+        const x = this.x * scalar;
+        const y = this.y * scalar;
+        const z = this.z * scalar;
+        return new Vector3D(x,y,z);
     }
 
     /**
