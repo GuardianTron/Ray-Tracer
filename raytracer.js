@@ -13,14 +13,34 @@ const shapes = [
     new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0))
 ];
 
+
+
 const controls = document.getElementById('config');
+
 const submit_btn = document.getElementById('render_btn');
+
+
+controls.elements['view_width'].addEventListener('input',slideHandlerMaker('view_width_out'));
+controls.elements['view_height'].addEventListener('input',slideHandlerMaker('view_height_out'));
+controls.elements['distance'].addEventListener('input',slideHandlerMaker('distance_out'));
+
+
+
+function slideHandlerMaker(outputId) {
+    const outputElement = document.getElementById(outputId);
+    return function(event){
+        outputElement.value = event.target.value;
+    };
+}
+
 controls.addEventListener('submit',(e)=>{
     e.preventDefault();
 
     const viewWidth = Number(controls.elements['view_width'].value);
     const viewHeight = Number(controls.elements['view_height'].value);
     const distance = Number(controls.elements['distance'].value);
+
+
     console.log("Rendering", viewWidth,viewHeight,distance);
     rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes);
     console.log('Finished');
