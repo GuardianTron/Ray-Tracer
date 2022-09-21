@@ -101,7 +101,7 @@ export class Vector3D{
         const y = this.y + vec2.y;
         const z = this.z + vec2.z;
         return new Vector3D(x,y,z);
-
+    
     }
 
     /**
