@@ -1,7 +1,7 @@
 "use strict";
 import { Sphere } from "./libraries/shapes.js";
 import { Vector3D } from "./libraries/vector.js";
-import { TraceRay,  canvasToViewport } from "./libraries/raytrace.js";
+import { canvasToViewport } from "./libraries/raytrace.js";
 import { Color } from "./libraries/color.js";
 import { Camera } from "./libraries/camera.js";
 
