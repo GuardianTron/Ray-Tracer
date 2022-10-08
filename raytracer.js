@@ -18,11 +18,14 @@ const shapes = [
 const controls = document.getElementById('config');
 
 const submit_btn = document.getElementById('render_btn');
+const width_slider = controls.elements['view_width'];
+const height_slider = controls.elements['view_height'];
+const distance_slider = controls.elements['distance'];
 
 
-controls.elements['view_width'].addEventListener('input',slideHandlerMaker('view_width_out'));
-controls.elements['view_height'].addEventListener('input',slideHandlerMaker('view_height_out'));
-controls.elements['distance'].addEventListener('input',slideHandlerMaker('distance_out'));
+width_slider.addEventListener('input',slideHandlerMaker('view_width_out'));
+height_slider.addEventListener('input',slideHandlerMaker('view_height_out'));
+distance_slider.addEventListener('input',slideHandlerMaker('distance_out'));
 
 
 
@@ -45,6 +48,9 @@ controls.addEventListener('submit',(e)=>{
     rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes);
     console.log('Finished');
 });
+
+
+
 
 
 
