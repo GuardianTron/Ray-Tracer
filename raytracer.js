@@ -38,20 +38,122 @@ function slideHandlerMaker(outputId) {
 
 controls.addEventListener('submit',(e)=>{
     e.preventDefault();
+    const camera = new Camera(origin,0,0,0);
+    camera.viewWidth = Number(controls.elements['view_width'].value);
+    camera.viewHeight = Number(controls.elements['view_height'].value);
+    camera.distance = Number(controls.elements['distance'].value);
+    const pixelsPerFrame = canvas.width * canvas.height/300;
 
-    const viewWidth = Number(controls.elements['view_width'].value);
-    const viewHeight = Number(controls.elements['view_height'].value);
-    const distance = Number(controls.elements['distance'].value);
+    const rasterizer = new Rasterizer(canvas,camera,shapes);
+
+    function animate(timestep){
+        for(let i = 0; i < pixelsPerFrame && !rasterizer.doneProcessing(); i++){
+            rasterizer.rasterizePixel();
+        }
+        rasterizer.drawImage();
+        if(!rasterizer.doneProcessing()){
+            window.requestAnimationFrame(animate);
+        }
+    }
+
+    window.requestAnimationFrame(animate);
 
 
-    console.log("Rendering", viewWidth,viewHeight,distance);
-    rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes);
-    console.log('Finished');
 });
 
 
 
+class Camera{
 
+    constructor(origin, width,height,distance){
+        this.origin = origin;
+        this.width = width;
+        this.height = height;
+        this.distance = distance;
+    }
+
+    get origin(){
+        return this._origin;
+    }
+
+    set origin(origin){
+        this._origin = origin;
+    }
+
+    get viewWidth(){
+        return this._width;
+    }
+
+    set viewWidth(width){
+        this._width = width;
+    }
+
+    get viewHeight(){
+        return this._height;
+    }
+
+    set viewHeight(height){
+        this._height = height;
+    }
+
+    get distance(){
+        return this._distance;
+    }
+
+    set distance(distance){
+        this._distance = distance;
+    }
+}
+
+class Rasterizer{
+
+    constructor(canvasElement, camera, shapes = []){
+        this.shapes = shapes;
+        this.canvas = canvasElement;
+        this.context = this.canvas.getContext('2d');
+        this.camera = camera;
+        this.reset();
+    }
+
+    reset = () =>{
+        this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
+        this.imageData = this.context.createImageData(this.canvas.width,this.canvas.height);
+        this.currentX = 0;
+        this.currentY = 0;
+
+    }
+
+    doneProcessing = () =>{
+        return this.currentY > this.canvas.height;
+    }
+
+    rasterizePixel = () =>{
+        
+        if(!this.doneProcessing()){
+
+            const viewportRay = canvasToViewport(this.currentX,this.currentY,this.canvas.width,this.canvas.height,this.camera.viewWidth,this.camera.viewHeight,this.camera.distance);
+            const color = TraceRay(this.camera.origin,viewportRay,this.shapes);
+            if(color){
+                drawPixel(this.currentX,this.currentY,this.imageData,color);
+            }
+        }
+        
+        //iterative step
+        this.currentX++;
+        if(this.currentX > this.canvas.width){
+            this.currentX = 0;
+            this.currentY++;
+        }
+
+
+
+    }
+
+    drawImage = ()=>{
+        this.context.putImageData(this.imageData,0,0);
+    }
+
+}
 
 
 function rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes){
