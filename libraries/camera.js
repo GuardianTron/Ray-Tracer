@@ -71,6 +71,12 @@ export default class Camera{
         this._distance = distance;
     }
 
+    /**
+     * Traces ray in camera space
+     * @param {Vector3D} directionRay -- Direction ray in camera space. 
+     * @param {Array[Shape]} shapes -- An array of shapes 
+     * @returns Color
+     */
     traceRay(directionRay,shapes=[]){
         let tMin = Infinity;
         let color = null;
@@ -86,6 +92,7 @@ export default class Camera{
         return color;
 
     }
+
 }
 
 export { Camera };
