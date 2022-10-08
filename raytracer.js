@@ -3,6 +3,7 @@ import { Sphere } from "./libraries/shapes.js";
 import { Vector3D } from "./libraries/vector.js";
 import { TraceRay,  canvasToViewport } from "./libraries/raytrace.js";
 import { Color } from "./libraries/color.js";
+import { Camera } from "./libraries/camera.js";
 
 const canvas = document.getElementById("ray_canvas");
 const origin = new Vector3D(0,0,0);
@@ -63,47 +64,7 @@ controls.addEventListener('submit',(e)=>{
 
 
 
-class Camera{
 
-    constructor(origin, width,height,distance){
-        this.origin = origin;
-        this.width = width;
-        this.height = height;
-        this.distance = distance;
-    }
-
-    get origin(){
-        return this._origin;
-    }
-
-    set origin(origin){
-        this._origin = origin;
-    }
-
-    get viewWidth(){
-        return this._width;
-    }
-
-    set viewWidth(width){
-        this._width = width;
-    }
-
-    get viewHeight(){
-        return this._height;
-    }
-
-    set viewHeight(height){
-        this._height = height;
-    }
-
-    get distance(){
-        return this._distance;
-    }
-
-    set distance(distance){
-        this._distance = distance;
-    }
-}
 
 class Rasterizer{
 
