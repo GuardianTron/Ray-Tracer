@@ -1,7 +1,17 @@
 "use strict";
 import { canvasToViewport } from "./raytrace.js"
 
+/**
+ * Responsible for rasterizing the scene to canvas
+ */
 export class Rasterizer{
+
+    /**
+     * 
+     * @param {Canvas} canvasElement 
+     * @param {Camera} camera 
+     * @param {Array[Shape]} shapes 
+     */
 
     constructor(canvasElement, camera, shapes = []){
         this.shapes = shapes;
@@ -11,6 +21,11 @@ export class Rasterizer{
         this.reset();
     }
 
+    /**
+     * Creates a blank canvas to draw image and
+     * sets starting point back to beginning of canvas.
+     */
+
     reset = () =>{
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
         this.imageData = this.context.createImageData(this.canvas.width,this.canvas.height);
@@ -19,9 +34,17 @@ export class Rasterizer{
 
     }
 
+    /**
+     * Tests if the scene is fully rendered.
+     * @returns Boolean
+     */
     doneProcessing = () =>{
         return this.currentY > this.canvas.height;
     }
+
+    /**
+     * Rasterizes a single pixel of the scene onto the canvas buffer.
+     */
 
     rasterizePixel = () =>{
         
@@ -45,6 +68,9 @@ export class Rasterizer{
 
     }
 
+    /**
+     * Draws the scene buffer to the canvas.
+     */
     drawImage = ()=>{
         this.context.putImageData(this.imageData,0,0);
     }
