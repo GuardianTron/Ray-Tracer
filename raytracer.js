@@ -93,7 +93,7 @@ class Rasterizer{
         if(!this.doneProcessing()){
 
             const viewportRay = canvasToViewport(this.currentX,this.currentY,this.canvas.width,this.canvas.height,this.camera.viewWidth,this.camera.viewHeight,this.camera.distance);
-            const color = TraceRay(this.camera.origin,viewportRay,this.shapes);
+            const color = this.camera.traceRay(viewportRay,this.shapes);
             if(color){
                 drawPixel(this.currentX,this.currentY,this.imageData,color);
             }

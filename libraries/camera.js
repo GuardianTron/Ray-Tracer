@@ -3,8 +3,22 @@ import { Shape } from "./shapes.js";
 import { Vector3D } from "./vector.js";
 import { Color } from "./color.js";
 
+
+/**
+ * Represents the camera
+ * Provides methods for tracing individual rays within the 
+ * Camera's space.
+ */
+
 export default class Camera{
 
+    /**
+     * 
+     * @param {Vector3D} origin 
+     * @param {Number} width 
+     * @param {Number} height 
+     * @param {Number} distance 
+     */
     constructor(origin, width,height,distance){
         this.origin = origin;
         this.width = width;
@@ -55,6 +69,22 @@ export default class Camera{
             throw new TypeError('Distance must be a number');
         }
         this._distance = distance;
+    }
+
+    traceRay(directionRay,shapes=[]){
+        let tMin = Infinity;
+        let color = null;
+        for( const shape of shapes){
+            const ts = shape.intersectsRayAt(this.origin,directionRay);
+            for( const t of ts){
+                if(t >= 1 && t < tMin){
+                    tMin = t;
+                    color = shape.color;
+                }
+            }
+        }
+        return color;
+
     }
 }
 
