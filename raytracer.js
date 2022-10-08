@@ -1,7 +1,6 @@
 "use strict";
 import { Sphere } from "./libraries/shapes.js";
 import { Vector3D } from "./libraries/vector.js";
-import { canvasToViewport } from "./libraries/raytrace.js";
 import { Color } from "./libraries/color.js";
 import { Camera } from "./libraries/camera.js";
 import { Rasterizer } from "./libraries/rasterizer.js";
@@ -19,7 +18,6 @@ const shapes = [
 
 const controls = document.getElementById('config');
 
-const submit_btn = document.getElementById('render_btn');
 const width_slider = controls.elements['view_width'];
 const height_slider = controls.elements['view_height'];
 const distance_slider = controls.elements['distance'];
@@ -62,29 +60,3 @@ controls.addEventListener('submit',(e)=>{
 
 
 });
-
-
-
-
-
-
-
-
-function rasterize(canvas,viewWidth,viewHeight,origin,distance,shapes){
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    const imageData = ctx.createImageData(canvas.width,canvas.height);
-    for(let x = 0; x < canvas.width; x++){
-        for(let y = 0; y < canvas.height; y++){
-            const viewportRay = canvasToViewport(x,y,canvas.width,canvas.height,viewWidth,viewHeight,distance);
-            let color = TraceRay(origin,viewportRay,shapes);
-            if(color){
-
-                drawPixel(x,y,imageData,color);
-            }
-        }
-    }
-    ctx.putImageData(imageData,0,0);
-}
-
-
