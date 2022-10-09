@@ -38,11 +38,14 @@ function slideHandlerMaker(outputId) {
 
 controls.addEventListener('submit',(e)=>{
     e.preventDefault();
+    const shouldAnimate = controls.elements['animate'].checked;
     const camera = new Camera(origin,0,0,0);
     camera.viewWidth = Number(controls.elements['view_width'].value);
     camera.viewHeight = Number(controls.elements['view_height'].value);
     camera.distance = Number(controls.elements['distance'].value);
-    const pixelsPerFrame = canvas.width * canvas.height/300;
+    
+    const animateDivisor = (shouldAnimate)? 300 : 1;
+    const pixelsPerFrame = canvas.width * canvas.height/animateDivisor;
 
     const rasterizer = new Rasterizer(canvas,camera,shapes);
 
