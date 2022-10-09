@@ -31,6 +31,11 @@ window.addEventListener('load',(event)=>{
     document.getElementById('view_width_out').value = width_slider.value;
     document.getElementById('view_height_out').value = height_slider.value;
     document.getElementById('distance_out').value = distance_slider.value;
+    
+    //create square canvas with same width as parent container
+    const size = canvas.parentElement.offsetWidth;
+    canvas.width = size;
+    canvas.height = size;
 });
 
 
