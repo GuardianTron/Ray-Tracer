@@ -27,6 +27,12 @@ width_slider.addEventListener('input',slideHandlerMaker('view_width_out'));
 height_slider.addEventListener('input',slideHandlerMaker('view_height_out'));
 distance_slider.addEventListener('input',slideHandlerMaker('distance_out'));
 
+window.addEventListener('load',(event)=>{
+    document.getElementById('view_width_out').value = width_slider.value;
+    document.getElementById('view_height_out').value = height_slider.value;
+    document.getElementById('distance_out').value = distance_slider.value;
+});
+
 
 
 function slideHandlerMaker(outputId) {
