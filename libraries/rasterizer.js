@@ -50,8 +50,7 @@ export class Rasterizer{
         
         if(!this.doneProcessing()){
 
-            const viewportRay = this.camera.canvasToViewport(this.currentX,this.currentY,this.canvas.width,this.canvas.height);
-            const color = this.camera.traceRay(viewportRay,this.shapes);
+            const color = this.camera.getPixelColor(this.currentX,this.currentY,this.canvas.width,this.canvas.height,this.shapes);
             if(color){
                 drawPixel(this.currentX,this.currentY,this.imageData,color);
             }

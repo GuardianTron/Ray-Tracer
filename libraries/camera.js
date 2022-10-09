@@ -115,6 +115,21 @@ export default class Camera{
 
     }
 
+    /**
+     * Condensed method that converts canvas points to camera space
+     * and then traces the ray.
+     * @param { Number } x -- X in canvas coordinates 
+     * @param { Number } y -- Y in canvas coordinates
+     * @param { Number } canvasWidth 
+     * @param { Number } canvasHeight 
+     * @param { Array[Shapes}  shapes 
+     * @returns Color
+     */
+    getPixelColor = (x,y,canvasWidth,canvasHeight,shapes=[])=>{
+        const viewportRay = this.canvasToViewPort(x,y,canvasWidth,canvasHeight);
+        return this.traceRay(viewportRay,shapes);
+    }
+
 
 
 
