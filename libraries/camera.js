@@ -93,6 +93,31 @@ export default class Camera{
 
     }
 
+    /**
+     * Project pixel from canvas into camera space.
+     * @param { Number } x -- X in canvas coordinates 
+     * @param { Number } y -- Y in canvas coordinates
+     * @param { Number } canvasWidth 
+     * @param { Number } canvasHeight 
+     * @returns Vector3D
+     */
+
+    canvasToViewPort = (x,y,canvasWidth,canvasHeight) => {
+        /* x and y use screen coordinates.  First convert to cartesian 
+         * coordinates with origin at center and y increasing upward instead
+         * of downward.
+         * Note: Resultant vector is in camera space, not world space.
+         */
+
+        x = x - canvasWidth/2;
+        y = canvasHeight/2 - y;
+        return new Vector3D(x*this.viewWidth/canvasWidth, y*this.viewHeight/canvasHeight,this.distance);
+
+    }
+
+
+
+
 }
 
 export { Camera };
