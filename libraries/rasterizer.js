@@ -1,5 +1,4 @@
 "use strict";
-import { canvasToViewport } from "./raytrace.js"
 
 /**
  * Responsible for rasterizing the scene to canvas
