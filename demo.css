@@ -1,9 +1,16 @@
 
 #demo_container{
-    max-width: 640px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+    
+
+}
+
+#canvas_container{
+    max-width: 640px;
+    width: 100%;
 
 }
 
