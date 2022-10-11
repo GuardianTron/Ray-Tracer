@@ -13,10 +13,16 @@ function slideHandlerMaker(outputId) {
     };
 }
 
+function getScriptDirectory(){
+    const url = import.meta.url;
+    const lastSlashIndex = url.lastIndexOf('/');
+    return url.substring(0,lastSlashIndex+1);
+}
+
 async function loadDemo(url){
     const demoHolder = document.getElementById('demo_container');
     try{
-        const response = await fetch(url);
+        const response = await fetch(getScriptDirectory() + url);
         const htmlText = await response.text();
         demoHolder.innerHTML = htmlText;
         setUpDemo();
@@ -28,6 +34,7 @@ async function loadDemo(url){
     }
 
 }
+
 
 function setUpDemo(){
     const canvas = document.getElementById("ray_canvas");
