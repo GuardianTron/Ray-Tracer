@@ -1,8 +1,7 @@
 
 #demo_container{
     max-width: 640px;
-    display: flex;
-    justify-content: center;
+
 }
 
 #demo_container form{
