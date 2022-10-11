@@ -22,7 +22,7 @@ async function loadDemo(url){
         setUpDemo();
     }
     catch(error){
-        demoHolder.innerHTML = "<p>Unfortunately, there was an error loading the demo."
+        demoHolder.innerHTML = "<p>Unfortunately, there was an error loading the demo.</p>"
         console.error(error);
 
     }
@@ -90,6 +90,7 @@ function setUpDemo(){
     });
 }
 
+loadDemo('raydemo.html');
 
 
 
