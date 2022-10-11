@@ -1,25 +1,13 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Ray Tracer</title>
-        <link href="demo.css" rel="stylesheet">
-    </head>
-    <body>
-        <div id="demo_container">
-            <canvas id="ray_canvas">
+<canvas id="ray_canvas">
 
-            </canvas>
+</canvas>
 
-            <form id="config">
+<form id="config">
            
-                    <label for="view_width">Viewport Width</label><input name="view_width" type="range" min="-5" max="5" step=".1" value="1"> <output id="view_width_out"></output>
+    <label for="view_width">Viewport Width</label><input name="view_width" type="range" min="-5" max="5" step=".1" value="1"> <output id="view_width_out"></output>
 
-                    <label for="view_height">Viewport Height</label><input name="view_height" type="range" min="-5" max="5" step=".1" value="1"><output id="view_height_out"></output>
-                    <label for="distance">Distance </label><input name="distance" type="range" min="0.1" max="10" step=".1" value="1"><output id="distance_out"></output>
-                    <div><label for="animate">Animate?</label><input type="checkbox" name="animate" checked ></div>
-                    <button form_id="config" id="render_btn">Render</button>
-            </form>
-        </div>
-            <script type="module" src="raytracer.js"></script>
-        </body>
-</html>
+    <label for="view_height">Viewport Height</label><input name="view_height" type="range" min="-5" max="5" step=".1" value="1"><output id="view_height_out"></output>
+    <label for="distance">Distance </label><input name="distance" type="range" min="0.1" max="10" step=".1" value="1"><output id="distance_out"></output>
+    <div><label for="animate">Animate?</label><input type="checkbox" name="animate" checked ></div>
+    <button form_id="config" id="render_btn">Render</button>
+</form>
