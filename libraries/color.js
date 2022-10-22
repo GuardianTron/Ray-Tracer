@@ -49,6 +49,22 @@ export class Color{
         this._testValue(b);
         this._b = b;
     }
+
+    scaleByIntensity(intensity){
+        const r = this._scaleChannelByIntensity(intensity,this.r);
+        const g = this._scaleChannelByIntensity(intensity,this.g);
+        const b = this._scaleChannelByIntensity(intensity,this.b);
+        return new Color(r,g,b);
+        
+    }
+
+    _scaleChannelByIntensity(intensity,channel){
+        let scaled = intensity * channel;
+        //ensure channel is integer between 0 and 255;
+        scaled = Math.max(0,scaled);
+        scaled = Math.min(255,scaled);
+        return Math.round(scaled);
+    }
 }
 
 export default Color;

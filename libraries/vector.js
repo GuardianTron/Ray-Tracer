@@ -87,6 +87,16 @@ export class Vector3D{
     length(){
         let dp = this.dotProduct(this);
         return Math.sqrt(dp);
+
+    }
+
+    cosineBetween(vec2){
+        this._vectorTypeOrError(vec2);
+        return this.dotProduct(vec2)/(this.length()*vec2.length());
+    }
+
+    getUnit(){
+        return this.multiplyByScalar(1/this.length());
     }
 
 

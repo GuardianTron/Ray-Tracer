@@ -12,8 +12,9 @@ export class Rasterizer{
      * @param {Array[Shape]} shapes 
      */
 
-    constructor(canvasElement, camera, shapes = []){
+    constructor(canvasElement, camera, shapes = [], lights = []){
         this.shapes = shapes;
+        this.lights = lights;
         this.canvas = canvasElement;
         this.context = this.canvas.getContext('2d');
         this.camera = camera;
@@ -49,7 +50,7 @@ export class Rasterizer{
         
         if(!this.doneProcessing()){
 
-            const color = this.camera.getPixelColor(this.currentX,this.currentY,this.canvas.width,this.canvas.height,this.shapes);
+            const color = this.camera.getPixelColor(this.currentX,this.currentY,this.canvas.width,this.canvas.height,this.shapes,this.lights);
             if(color){
                 drawPixel(this.currentX,this.currentY,this.imageData,color);
             }

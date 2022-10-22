@@ -71,6 +71,13 @@ import Color from "./color.js";
         this._radius = radius;
     }
 
+    getNormal(surfacePoint){
+        if(!(surfacePoint instanceof Vector3D)){
+            throw new TypeError("Surface point must be an instance of Vector3D");
+        }
+        return surfacePoint.subtract(this.center).getUnit();
+    }
+
     intersectsRayAt(originPoint,vector){
         super.intersectsRayAt(originPoint,vector);
         const directionVector = vector.subtract(originPoint);
@@ -96,5 +103,7 @@ import Color from "./color.js";
 
 
     }
+
+    
  }
  export {Shape,Sphere};

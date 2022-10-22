@@ -4,6 +4,7 @@ import { Vector3D } from "./libraries/vector.js";
 import { Color } from "./libraries/color.js";
 import { Camera } from "./libraries/camera.js";
 import { Rasterizer } from "./libraries/rasterizer.js";
+import { Light, PointLight, DirectionalLight } from "./libraries/lighting.js";
 
 const canvas = document.getElementById("ray_canvas");
 const origin = new Vector3D(0,0,0);
@@ -11,7 +12,14 @@ const origin = new Vector3D(0,0,0);
 const shapes = [
     new Sphere(new Vector3D(0,-1,3),1, new Color(255,0,0)),
     new Sphere(new Vector3D(2,0,4),1, new Color(0,0,255)),
-    new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0))
+    new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0)),
+    new Sphere(new Vector3D(0,-5001,0),5000, new Color(255,255,0))
+];
+
+const lights = [
+    new Light(0.2),
+    new PointLight(0.6,new Vector3D(2,1,0)),
+    new DirectionalLight(0.2,new Vector3D(1,4,4))
 ];
 
 
@@ -58,7 +66,7 @@ controls.addEventListener('submit',(e)=>{
     const animateDivisor = (shouldAnimate)? 300 : 1;
     const pixelsPerFrame = canvas.width * canvas.height/animateDivisor;
 
-    const rasterizer = new Rasterizer(canvas,camera,shapes);
+    const rasterizer = new Rasterizer(canvas,camera,shapes,lights);
 
     function animate(timestep){
         for(let i = 0; i < pixelsPerFrame && !rasterizer.doneProcessing(); i++){
