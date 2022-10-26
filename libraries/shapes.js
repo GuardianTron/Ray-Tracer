@@ -110,12 +110,12 @@ import { RTShaderBase } from "./lighting.js";
         if(!(surfacePoint instanceof Vector3D)){
             throw new TypeError("Surface point must be an instance of Vector3D");
         }
-        return surfacePoint.subtract(this.center).getUnit();
+        return surfacePoint.subtract(this.center).normalize();
     }
 
-    intersectsRayAt(originPoint,vector){
-        super.intersectsRayAt(originPoint,vector);
-        const directionVector = vector.subtract(originPoint);
+    intersectsRayAt(originPoint,directionVector){
+        super.intersectsRayAt(originPoint,directionVector);
+
         const centerToOriginVector = originPoint.subtract(this.center);
         //quadratic forumula constants for intersection.
         const a = directionVector.dotProduct(directionVector);
