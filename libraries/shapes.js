@@ -2,8 +2,43 @@
 
 import Vector3D from "./vector.js";
 import Color from "./color.js";
+import { RTShaderBase } from "./lighting.js";
 
  class Shape{
+
+    constructor(diffuseShader=null,specularShader=null){
+        if(!diffuseShader){
+            diffuseShader = new RTShaderBase();
+        }
+
+        if(!specularShader){
+            specularShader = new RTShaderBase();
+        }
+        this.diffuse = diffuseShader;
+        this.specular = specularShader;
+    }
+
+    get diffuse(){
+        return this._diffuseShader;
+    }
+
+    set diffuse(shader){
+        if(! (shader instanceof RTShaderBase)){
+            throw new TypeError("Shaders must be an of RTShaderBase");
+        }
+        this._diffuseShader = shader;
+    }
+
+    get specular(){
+        return this._specularShader;
+    }
+
+    set specular(shader){
+        if(!(shader instanceof RTShaderBase)){
+            throw new TypeError("Shaders must be an instance of RTShaderBase");
+        }
+        this._specularShader = shader;
+    }
 
     /**
      * Calculates the parametric intersectons with the ray being cast.
@@ -32,8 +67,8 @@ import Color from "./color.js";
      * @param {Color} color -- The object's color.
      */
 
-    constructor(center,radius,color){
-        super();
+    constructor(center,radius,color,diffuseShader = null, specularShader = null){
+        super(diffuseShader,specularShader);
         this.center = center;
         this.radius = radius;
         this.color = color;
