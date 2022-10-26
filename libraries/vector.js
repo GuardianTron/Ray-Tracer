@@ -17,6 +17,7 @@ export class Vector3D{
         if(isNaN(x)){
             throw new TypeError('X must be type Number.');
         }
+        this._length = NaN;
         this._x = x;
     }
 
@@ -29,6 +30,7 @@ export class Vector3D{
         if(isNaN(y)){
             throw new TypeError('y must be type Number.');
         }
+        this._length = NaN;
         this._y = y;
     }
 
@@ -40,12 +42,13 @@ export class Vector3D{
         if(isNaN(z)){
             throw new TypeError('z must be type Number.');
         }
+        this._length = NaN;
         this._z = z;
     }
 
     _vectorTypeOrError(vec2){
         if(!(vec2 instanceof Vector3D)){
-            throw new TypeError("Parameter must be of type Vector3D.");
+            throw new TypeError(`Parameter must be of type Vector3D. ${typeof vec2}`);
         }
 
     
@@ -85,8 +88,10 @@ export class Vector3D{
      * @returns Number
      */
     length(){
-        let dp = this.dotProduct(this);
-        return Math.sqrt(dp);
+        if(isNaN(this._length)){
+            this._length = Math.sqrt(this.dotProduct(this));
+        }
+        return this._length;
 
     }
 
@@ -114,6 +119,14 @@ export class Vector3D{
     
     }
 
+    normalize(){
+        const length = this.length();
+        this.x /= length;
+        this.y /= length;
+        this.z /= length;
+        return this;
+    }
+
     /**
      * Multiplies the vector by a scalar and return result as new Vector3D
      * @param {*} scalar 
@@ -137,8 +150,10 @@ export class Vector3D{
 
     subtract(vec2){
         this._vectorTypeOrError(vec2);
-        const negVec2 = vec2.multiplyByScalar(-1);
-        return this.add(negVec2);
+        const x = this.x - vec2.x;
+        const y = this.y - vec2.y;
+        const z = this.z - vec2.z;
+        return new Vector3D(x,y,z);
     }
 
 
@@ -158,6 +173,7 @@ export class Vector3D{
 
     multiplySelfByScalar(scalar){
         this._copyVectorToSelf(this.multiplyByScalar(scalar));
+        return this;
     }
 
     /**
@@ -167,6 +183,7 @@ export class Vector3D{
 
     subtractSelf(vec2){
         this._copyVectorToSelf(this.subtract(vec2));
+        return this;
     }
     
 }

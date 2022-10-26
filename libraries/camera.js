@@ -95,6 +95,7 @@ export default class Camera{
             //apply lighting
             const intersectionPoint = this.origin.add(directionRay.multiplyByScalar(tMin));
             let intensity = 0;
+            const viewDirection = directionRay.multiplyByScalar(1);
             for(const light of lights){
                 if(!(light instanceof PointLight || light instanceof DirectionalLight )){
                     intensity += light.intensity;
@@ -102,9 +103,10 @@ export default class Camera{
                 }
                 const normal = intersectedShape.getNormal(intersectionPoint);
                 const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
-                const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal);
+                const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
 
-                intensity += light.intensity * diffuseMultiplier * specularMultiplier;
+                intensity += light.intensity * diffuseMultiplier;
+                intensity += light.intensity * specularMultiplier;
             }
             return intersectedShape.color.scaleByIntensity(intensity);
             

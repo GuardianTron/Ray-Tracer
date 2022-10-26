@@ -84,8 +84,20 @@ class RTShaderBase{
 
 
 
-    evaluate(light,intersectionPoint,normal){
+    evaluate(light,intersectionPoint,normal,viewDirection=null){
         return 1;
+    }
+
+    _getLightDirection(light,intersectionPoint){
+        let direction = null;
+        if(light instanceof PointLight){
+            direction = light.getDirection(intersectionPoint);
+        }
+        else if (light instanceof DirectionalLight){
+            direction = light.direction;
+        }
+        return direction;
+
     }
 
     
@@ -94,15 +106,10 @@ class RTShaderBase{
 
 class BookDiffuseShader extends RTShaderBase{
 
-    evaluate(light,intersectionPoint,normal){
-        let direction = null;
-        if(light instanceof PointLight){
-            direction = light.getDirection(intersectionPoint);
-        }
-        else if (light instanceof DirectionalLight){
-            direction = light.direction;
-        }
-        else{
+    evaluate(light,intersectionPoint,normal,viewDirection=null){
+        let direction = this._getLightDirection(light,intersectionPoint);
+
+        if(!direction){
             return 1;
         }
 
@@ -113,5 +120,39 @@ class BookDiffuseShader extends RTShaderBase{
     }
 }
 
+class BookSpecularShader extends RTShaderBase{
 
-export {Light,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader};
+    constructor(exponent=1){
+        super();
+        this.exponent = exponent;
+    }
+
+    get exponent(){
+        return this._exponent;
+    }
+
+    set exponent(exp){
+        if(isNaN(exp)){
+            throw new TypeError("Exponents must be a number.");
+        }
+        this._exponent = exp;
+    }
+
+    evaluate(light,intersectionPoint,normal,viewDirection){
+        let lightDirection = this._getLightDirection(light,intersectionPoint);
+        
+        //ambient lighting. Doesn't affect specular intensity
+        if(!lightDirection) return 0;
+        
+        
+        const reflection = lightDirection.subtract(normal.multiplyByScalar(2*normal.dotProduct(lightDirection)));
+        const angle = Math.max(0,reflection.cosineBetween(viewDirection));
+        return Math.pow(angle,this.exponent);
+        
+        
+
+    }
+}
+
+
+export {Light,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader};
