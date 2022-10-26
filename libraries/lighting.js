@@ -1,5 +1,6 @@
 "use strict";
 import { Vector3D } from "./vector.js";
+import { Shape } from "./shapes.js";
 
 
 export default class Light{
@@ -7,15 +8,15 @@ export default class Light{
     constructor(intensity){
 
 
-        this.baseIntensity = intensity;
+        this.intensity = intensity;
 
     }
 
-    get baseIntensity(){
+    get intensity(){
         return this._intensity;
     }
 
-    set baseIntensity(intensity){
+    set intensity(intensity){
         if(isNaN(intensity)){
             throw new TypeError("Intensity values must be a number.");
         }
@@ -25,20 +26,9 @@ export default class Light{
         this._intensity = intensity;
     }
 
-    getIntensity(surfaceNormal,intersectionPoint){
-        if(! (surfaceNormal instanceof Vector3D)){
-            throw new TypeError("Surface Normals must be an instance of Vector3D");
-        }
-        if(! (intersectionPoint instanceof Vector3D)){
-            throw new TypeError("Intersections points for rays must be an instance of Vector3D");
-        }
-        
-
-        return this.baseIntensity;
-    }
-
 
 }
+
 
 class PointLight extends Light{
     constructor(intensity,position){
@@ -59,14 +49,15 @@ class PointLight extends Light{
         this._position = position;
     }
 
-    getIntensity(surfaceNormal,intersectionPoint){
-        let intensity = super.getIntensity(surfaceNormal,intersectionPoint);
-        const lightDirection = this.position.subtract(intersectionPoint);
-        intensity *= lightDirection.cosineBetween(surfaceNormal);
-        return intensity;
+    getDirection(endPoint){
+        if(!(endPoint instanceof Vector3D)){
+            throw new TypeError("Endpoint must be an instance of Vector3D");
+        }
+        return this.position.subtract(endPoint);
 
 
     }
+
 }
 
 class DirectionalLight extends Light{
@@ -87,12 +78,40 @@ class DirectionalLight extends Light{
         this._direction = direction;
     }
 
-    getIntensity(surfaceNormal,intersectionPoint){
-        let intensity = super.getIntensity(surfaceNormal,intersectionPoint);
-        intensity *= this.direction.cosineBetween(surfaceNormal);
-        console.log(intensity);
-        return intensity;
+}
+
+class RTShaderBase{
+
+
+
+    evaluate(light,intersectionPoint,normal){
+        return 1;
+    }
+
+    
+
+}
+
+class BookDiffuseShader extends RTShaderBase{
+
+    evaluate(light,intersectionPoint,normal){
+        let direction = null;
+        if(light instanceof PointLight){
+            direction = light.getDirection(intersectionPoint);
+        }
+        else if (light instanceof DirectionalLight){
+            direction = light.direction;
+        }
+        else{
+            return 1;
+        }
+
+        return Math.max(normal.cosineBetween(direction),0);
+
+        
+
     }
 }
 
-export {Light,PointLight,DirectionalLight};
+
+export {Light,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader};
