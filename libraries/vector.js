@@ -87,7 +87,7 @@ export class Vector3D{
      * Calculates the length of a vector
      * @returns Number
      */
-    length(){
+    get length(){
         if(isNaN(this._length)){
             this._length = Math.sqrt(this.dotProduct(this));
         }
@@ -97,11 +97,11 @@ export class Vector3D{
 
     cosineBetween(vec2){
         this._vectorTypeOrError(vec2);
-        return this.dotProduct(vec2)/(this.length()*vec2.length());
+        return this.dotProduct(vec2)/(this.length*vec2.length);
     }
 
     getUnit(){
-        return this.multiplyByScalar(1/this.length());
+        return this.multiplyByScalar(1/this.length);
     }
 
 
@@ -120,7 +120,7 @@ export class Vector3D{
     }
 
     normalize(){
-        const length = this.length();
+        const length = this.length;
         this.x /= length;
         this.y /= length;
         this.z /= length;
