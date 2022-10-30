@@ -163,7 +163,10 @@ export class Vector3D{
      * @param {Vector3D} vec2 
      */
     addSelf(vec2){
-       this._copyVectorToSelf(this.add(vec2)); 
+       this.x += vec2.x;
+       this.y += vec2.y;
+       this.z += vec2.z;
+       return this;
     }
 
     /**
@@ -172,7 +175,9 @@ export class Vector3D{
      */
 
     multiplySelfByScalar(scalar){
-        this._copyVectorToSelf(this.multiplyByScalar(scalar));
+        this.x *= scalar;
+        this.y *= scalar;
+        this.z *= scalar;
         return this;
     }
 
@@ -182,7 +187,9 @@ export class Vector3D{
      */
 
     subtractSelf(vec2){
-        this._copyVectorToSelf(this.subtract(vec2));
+        this.x -= vec2.x;
+        this.y -= vec2.y;
+        this.z -= vec2.z;
         return this;
     }
     
