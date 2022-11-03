@@ -78,6 +78,10 @@ controls.addEventListener('submit',(e)=>{
     camera.viewWidth = Number(controls.elements['view_width'].value);
     camera.viewHeight = Number(controls.elements['view_height'].value);
     camera.distance = Number(controls.elements['distance'].value);
+
+    ambientLight.intensity = Number(ambient_slider.value);
+    pointLight.intensity = Number(point_slider.value);
+    directionalLight.intensity = Number(directional_slider.value);
     
     const animateDivisor = (shouldAnimate)? 300 : 1;
     const pixelsPerFrame = canvas.width * canvas.height/animateDivisor;
