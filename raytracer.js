@@ -79,6 +79,10 @@ controls.addEventListener('submit',(e)=>{
     camera.viewHeight = Number(controls.elements['view_height'].value);
     camera.distance = Number(controls.elements['distance'].value);
 
+    camera.enableAmbient = controls.elements['ambient_shader'].checked;
+    camera.enableDiffuse = controls.elements['diffuse_shader'].checked;
+    camera.enableSpecular = controls.elements['specular_shader'].checked;
+
     ambientLight.intensity = Number(ambient_slider.value);
     pointLight.intensity = Number(point_slider.value);
     directionalLight.intensity = Number(directional_slider.value);
