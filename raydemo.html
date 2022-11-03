@@ -12,13 +12,19 @@
 
             <form id="config">
 
+                <fieldset>
+
                     <label for="view_width">Viewport Width</label><input name="view_width" type="range" min="-5" max="5" step=".1" value="1"> <output id="view_width_out"></output>
 
                     <label for="view_height">Viewport Height</label><input name="view_height" type="range" min="-5" max="5" step=".1" value="1"><output id="view_height_out"></output>
                     <label for="distance">Distance </label><input name="distance" type="range" min="0.1" max="10" step=".1" value="1"><output id="distance_out"></output>
+                    
+                </fieldset>
+                <fieldset>
                     <label for="ambient_light">Ambient Light</label><input type="range" name="ambient_light" min="0.1" max="1" step=".1" value=".2"><output id="ambient_light_out"></output>
                     <label for="point_light">Point Light</label><input type="range" name="point_light" min="0.1" max="1" step=".1" value=".6"><output id="point_light_out"></output>
                     <label for="directional_light">Directional Light</label><input type="range" name="directional_light" min="0.1" max="1" step=".1" value=".2"><output id="directional_light_out"></output>
+                </fieldset>
                     <div><label for="animate">Animate?</label><input type="checkbox" name="animate" checked ></div>
 
                     <button form_id="config" id="render_btn">Render</button>
