@@ -25,6 +25,9 @@ export default class Camera{
         this.width = width;
         this.height = height;
         this.distance = distance;
+        this.enableAmbient = true;
+        this.enableDiffuse = true;
+        this.enableSpecular = true;
     }
 
     get origin(){
@@ -72,6 +75,30 @@ export default class Camera{
         this._distance = distance;
     }
 
+    get enableAmbient(){
+        return this._enableAmbient;
+    }
+
+    set enableAmbient(value){
+        this._enableAmbient = Boolean(value);
+    }
+
+    get enableDiffuse(){
+        return this._enableDiffuse;
+    }
+
+    set enableDiffuse(value){
+        this._enableDiffuse = Boolean(value);
+    }
+
+    get enableSpecular(){
+        return this._enableSpecular;
+    }
+
+    set enableSpecular(value){
+        this._enableSpecular = Boolean(value);
+    }
+
     /**
      * Traces ray in camera space
      * @param {Vector3D} directionRay -- Direction ray in camera space. 
@@ -97,7 +124,7 @@ export default class Camera{
             let intensity = 0;
             const viewDirection = directionRay.multiplyByScalar(1);
             for(const light of lights){
-                if(!(light instanceof PointLight || light instanceof DirectionalLight )){
+                if(!(light instanceof PointLight || light instanceof DirectionalLight ) && this.enableAmbient){
                     intensity += light.intensity;
                     continue;
                 }
@@ -105,8 +132,8 @@ export default class Camera{
                 const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
                 const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
 
-                intensity += light.intensity * diffuseMultiplier;
-                intensity += light.intensity * specularMultiplier;
+                if(this.enableDiffuse) intensity += light.intensity * diffuseMultiplier;
+                if(this.enableSpecular) intensity += light.intensity * specularMultiplier;
             }
             return intersectedShape.color.scaleByIntensity(intensity);
             
