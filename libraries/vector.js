@@ -82,6 +82,8 @@ export class Vector3D{
 
         return dp;
     }
+
+    
     
     /**
      * Calculates the length of a vector
@@ -95,10 +97,21 @@ export class Vector3D{
 
     }
 
+    /**
+     * Calculates cosine between two vectors.
+     * @param {Vector3D} vec2 
+     * @returns Number - Cosine between two vectors
+     */
+
     cosineBetween(vec2){
         this._vectorTypeOrError(vec2);
         return this.dotProduct(vec2)/(this.length*vec2.length);
     }
+
+    /**
+     * Returns normalized version of the vector as a separate instance.
+     * @returns Vector3D
+     */
 
     getUnit(){
         return this.multiplyByScalar(1/this.length);
@@ -119,6 +132,11 @@ export class Vector3D{
     
     }
 
+    /**
+     * Normalizes current vector instance.
+     * @returns Vector3D
+     */
+
     normalize(){
         const length = this.length;
         this.x /= length;
@@ -126,6 +144,8 @@ export class Vector3D{
         this.z /= length;
         return this;
     }
+
+    
 
     /**
      * Multiplies the vector by a scalar and return result as new Vector3D

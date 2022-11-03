@@ -2,8 +2,16 @@
 import { Vector3D } from "./vector.js";
 import { Shape } from "./shapes.js";
 
-
+/**
+ * Base class for light. 
+ * Represent ambient lighting.
+ */
 export default class Light{
+
+    /**
+     * 
+     * @param {Number} intensity - Light's intensity value.
+     */
 
     constructor(intensity){
 
@@ -29,8 +37,17 @@ export default class Light{
 
 }
 
+/**
+ * Represents a points light.
+ */
 
 class PointLight extends Light{
+
+    /**
+     * 
+     * @param {Number} intensity - Light's intensity value.
+     * @param {Vector3D} position - Position of light in scene space.
+     */
     constructor(intensity,position){
         super(intensity);
         this.position = position;
@@ -49,6 +66,12 @@ class PointLight extends Light{
         this._position = position;
     }
 
+    /**
+     * Calculates the direction vector of a light 
+     * ray from the light to the surface.
+     * @param {Vector3D} endPoint 
+     * @returns Vector3D
+     */
     getDirection(endPoint){
         if(!(endPoint instanceof Vector3D)){
             throw new TypeError("Endpoint must be an instance of Vector3D");
@@ -60,8 +83,17 @@ class PointLight extends Light{
 
 }
 
+/**
+ * Implements directional lighting.
+ */
+
 class DirectionalLight extends Light{
 
+    /**
+     * 
+     * @param {Number} intensity - Light's intensity value 
+     * @param {Vector3D} direction - Orientation of light rays.
+     */
     constructor(intensity,direction){
         super(intensity);
         this.direction = direction;
@@ -80,13 +112,32 @@ class DirectionalLight extends Light{
 
 }
 
+/**
+ * Base class for shaders.
+ */
+
 class RTShaderBase{
 
+    /**
+     * Calcutes shading.
+     * @param {Light} light - Light instance 
+     * @param {Vector3D} intersectionPoint - Point in scene space light hits surface.
+     * @param {Vector3D} normal - Surface Normal 
+     * @param {Vector3D} viewDirection - Direction from intersection to camera.
+     * @returns Number -Intensity value.
+     */
 
 
     evaluate(light,intersectionPoint,normal,viewDirection=null){
         return 1;
     }
+
+    /**
+     * Abstracts obtaining light direction from different light sources
+     * @param {Light} light 
+     * @param {Vector3D} intersectionPoint - Point where light strikes surface. 
+     * @returns 
+     */
 
     _getLightDirection(light,intersectionPoint){
         let direction = null;
@@ -104,6 +155,10 @@ class RTShaderBase{
 
 }
 
+/**
+ * Basic Diffuse Shader
+ */
+
 class BookDiffuseShader extends RTShaderBase{
 
     evaluate(light,intersectionPoint,normal,viewDirection=null){
@@ -120,8 +175,17 @@ class BookDiffuseShader extends RTShaderBase{
     }
 }
 
+/**
+ * Basic Specular shader for highlights.
+ * 
+ */
+
 class BookSpecularShader extends RTShaderBase{
 
+    /**
+     * 
+     * @param {Number} exponent - Determines narrowness of highlight with higher values generating more concentrated highlights. 
+     */
     constructor(exponent=1){
         super();
         this.exponent = exponent;

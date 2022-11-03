@@ -106,12 +106,24 @@ import { RTShaderBase } from "./lighting.js";
         this._radius = radius;
     }
 
+    /**
+     * Returns surface normal.
+     * @param {Vector3D} surfacePoint - Intersection point in scene space. 
+     * @returns Vector3D
+     */
     getNormal(surfacePoint){
         if(!(surfacePoint instanceof Vector3D)){
             throw new TypeError("Surface point must be an instance of Vector3D");
         }
         return surfacePoint.subtract(this.center).normalize();
     }
+
+    /**
+     * Calulates shape's intersection point
+     * @param {Vector3D} originPoint - Start of ray in scene space. 
+     * @param {Vector3D} directionVector - Ray's direction vector. 
+     * @returns Vector3D - Intersection point in scene space.
+     */
 
     intersectsRayAt(originPoint,directionVector){
         super.intersectsRayAt(originPoint,directionVector);

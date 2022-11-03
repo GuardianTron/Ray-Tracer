@@ -2,6 +2,13 @@
 
 export class Color{
 
+    /**
+     * 
+     * @param {Number} r - Red channel value 0-255
+     * @param {Number} g - Green channel value 0-255
+     * @param {Number} b - Blue channel value 0-255
+     */
+
     constructor(r,g,b){
         this.r = r;
         this.g = g;
@@ -50,6 +57,12 @@ export class Color{
         this._b = b;
     }
 
+    /**
+     * Scales all channels by the given intensity.
+     * @param {Number} intensity 
+     * @returns Color
+     */
+
     scaleByIntensity(intensity){
         const r = this._scaleChannelByIntensity(intensity,this.r);
         const g = this._scaleChannelByIntensity(intensity,this.g);
@@ -57,6 +70,13 @@ export class Color{
         return new Color(r,g,b);
         
     }
+
+    /**
+     * Ensures that scaling produces an integer between 0 and 255
+     * @param {Number} intensity 
+     * @param {Number} channel 
+     * @returns 
+     */
 
     _scaleChannelByIntensity(intensity,channel){
         let scaled = intensity * channel;
