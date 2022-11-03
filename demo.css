@@ -6,6 +6,7 @@
     display: flex;
     width: fit-content;
     flex-direction: column;
+
     border: .1rem solid blue;
     padding: .5rem;
 }
@@ -19,6 +20,14 @@
 
     grid-row-gap: 1rem;
 }
+
+#demo_container fieldset.two_column{
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
+
 /*
 #demo_container button{
     grid-row: span 2;

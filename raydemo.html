@@ -27,6 +27,12 @@
                     <label for="point_light">Point Light</label><input type="range" name="point_light" min="0.1" max="1" step=".1" value=".6"><output id="point_light_out"></output>
                     <label for="directional_light">Directional Light</label><input type="range" name="directional_light" min="0.1" max="1" step=".1" value=".2"><output id="directional_light_out"></output>
                 </fieldset>
+                <fieldset class="two_column">
+                    <legend>Shaders</legend>
+                    <label for="ambient_shader">Ambient</label><input type="checkbox" name="ambient_shader" checked>
+                    <label for="diffuse_shader">Diffuse</label><input type="checkbox" name="diffuse_shader" checked>
+                    <label for="specular_shader">Specular</label><input type="checkbox" name="specular_shader" checked>
+                </fieldset>
                     <div><label for="animate">Animate?</label><input type="checkbox" name="animate" checked ></div>
 
                     <button form_id="config" id="render_btn">Render</button>
