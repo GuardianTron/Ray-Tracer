@@ -2,6 +2,7 @@
 import { Shape } from "./shapes.js";
 import { Vector3D } from "./vector.js";
 import { Color } from "./color.js";
+import { Light,PointLight,DirectionalLight} from "./lighting.js";
 
 
 /**
@@ -24,6 +25,9 @@ export default class Camera{
         this.width = width;
         this.height = height;
         this.distance = distance;
+        this.enableAmbient = true;
+        this.enableDiffuse = true;
+        this.enableSpecular = true;
     }
 
     get origin(){
@@ -71,25 +75,71 @@ export default class Camera{
         this._distance = distance;
     }
 
+    get enableAmbient(){
+        return this._enableAmbient;
+    }
+
+    set enableAmbient(value){
+        this._enableAmbient = Boolean(value);
+    }
+
+    get enableDiffuse(){
+        return this._enableDiffuse;
+    }
+
+    set enableDiffuse(value){
+        this._enableDiffuse = Boolean(value);
+    }
+
+    get enableSpecular(){
+        return this._enableSpecular;
+    }
+
+    set enableSpecular(value){
+        this._enableSpecular = Boolean(value);
+    }
+
     /**
      * Traces ray in camera space
      * @param {Vector3D} directionRay -- Direction ray in camera space. 
      * @param {Array[Shape]} shapes -- An array of shapes 
      * @returns Color
      */
-    traceRay(directionRay,shapes=[]){
+    traceRay(directionRay,shapes=[],lights=[]){
         let tMin = Infinity;
-        let color = null;
+        let intersectedShape = null;
         for( const shape of shapes){
             const ts = shape.intersectsRayAt(this.origin,directionRay);
             for( const t of ts){
                 if(t >= 1 && t < tMin){
                     tMin = t;
-                    color = shape.color;
+                    intersectedShape = shape;
                 }
             }
         }
-        return color;
+
+        if(intersectedShape){
+            //apply lighting
+            const intersectionPoint = this.origin.add(directionRay.multiplyByScalar(tMin));
+            let intensity = 0;
+            const viewDirection = directionRay.multiplyByScalar(1);
+            for(const light of lights){
+                if(!(light instanceof PointLight || light instanceof DirectionalLight ) && this.enableAmbient){
+                    intensity += light.intensity;
+                    continue;
+                }
+                const normal = intersectedShape.getNormal(intersectionPoint);
+                const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
+                const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
+
+                if(this.enableDiffuse) intensity += light.intensity * diffuseMultiplier;
+                if(this.enableSpecular) intensity += light.intensity * specularMultiplier;
+            }
+            return intersectedShape.color.scaleByIntensity(intensity);
+            
+
+        }
+        return null;
 
     }
 
@@ -125,9 +175,9 @@ export default class Camera{
      * @param { Array[Shapes}  shapes 
      * @returns Color
      */
-    getPixelColor = (x,y,canvasWidth,canvasHeight,shapes=[])=>{
+    getPixelColor = (x,y,canvasWidth,canvasHeight,shapes=[],lights=[])=>{
         const viewportRay = this.canvasToViewPort(x,y,canvasWidth,canvasHeight);
-        return this.traceRay(viewportRay,shapes);
+        return this.traceRay(viewportRay,shapes,lights);
     }
 
 

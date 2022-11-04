@@ -2,8 +2,43 @@
 
 import Vector3D from "./vector.js";
 import Color from "./color.js";
+import { RTShaderBase } from "./lighting.js";
 
  class Shape{
+
+    constructor(diffuseShader=null,specularShader=null){
+        if(!diffuseShader){
+            diffuseShader = new RTShaderBase();
+        }
+
+        if(!specularShader){
+            specularShader = new RTShaderBase();
+        }
+        this.diffuse = diffuseShader;
+        this.specular = specularShader;
+    }
+
+    get diffuse(){
+        return this._diffuseShader;
+    }
+
+    set diffuse(shader){
+        if(! (shader instanceof RTShaderBase)){
+            throw new TypeError("Shaders must be an of RTShaderBase");
+        }
+        this._diffuseShader = shader;
+    }
+
+    get specular(){
+        return this._specularShader;
+    }
+
+    set specular(shader){
+        if(!(shader instanceof RTShaderBase)){
+            throw new TypeError("Shaders must be an instance of RTShaderBase");
+        }
+        this._specularShader = shader;
+    }
 
     /**
      * Calculates the parametric intersectons with the ray being cast.
@@ -32,8 +67,8 @@ import Color from "./color.js";
      * @param {Color} color -- The object's color.
      */
 
-    constructor(center,radius,color){
-        super();
+    constructor(center,radius,color,diffuseShader = null, specularShader = null){
+        super(diffuseShader,specularShader);
         this.center = center;
         this.radius = radius;
         this.color = color;
@@ -71,9 +106,28 @@ import Color from "./color.js";
         this._radius = radius;
     }
 
-    intersectsRayAt(originPoint,vector){
-        super.intersectsRayAt(originPoint,vector);
-        const directionVector = vector.subtract(originPoint);
+    /**
+     * Returns surface normal.
+     * @param {Vector3D} surfacePoint - Intersection point in scene space. 
+     * @returns Vector3D
+     */
+    getNormal(surfacePoint){
+        if(!(surfacePoint instanceof Vector3D)){
+            throw new TypeError("Surface point must be an instance of Vector3D");
+        }
+        return surfacePoint.subtract(this.center).normalize();
+    }
+
+    /**
+     * Calulates shape's intersection point
+     * @param {Vector3D} originPoint - Start of ray in scene space. 
+     * @param {Vector3D} directionVector - Ray's direction vector. 
+     * @returns Vector3D - Intersection point in scene space.
+     */
+
+    intersectsRayAt(originPoint,directionVector){
+        super.intersectsRayAt(originPoint,directionVector);
+
         const centerToOriginVector = originPoint.subtract(this.center);
         //quadratic forumula constants for intersection.
         const a = directionVector.dotProduct(directionVector);
@@ -96,5 +150,7 @@ import Color from "./color.js";
 
 
     }
+
+    
  }
  export {Shape,Sphere};

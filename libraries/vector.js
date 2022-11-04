@@ -17,6 +17,7 @@ export class Vector3D{
         if(isNaN(x)){
             throw new TypeError('X must be type Number.');
         }
+        this._length = NaN;
         this._x = x;
     }
 
@@ -29,6 +30,7 @@ export class Vector3D{
         if(isNaN(y)){
             throw new TypeError('y must be type Number.');
         }
+        this._length = NaN;
         this._y = y;
     }
 
@@ -40,12 +42,13 @@ export class Vector3D{
         if(isNaN(z)){
             throw new TypeError('z must be type Number.');
         }
+        this._length = NaN;
         this._z = z;
     }
 
     _vectorTypeOrError(vec2){
         if(!(vec2 instanceof Vector3D)){
-            throw new TypeError("Parameter must be of type Vector3D.");
+            throw new TypeError(`Parameter must be of type Vector3D. ${typeof vec2}`);
         }
 
     
@@ -79,14 +82,39 @@ export class Vector3D{
 
         return dp;
     }
+
+    
     
     /**
      * Calculates the length of a vector
      * @returns Number
      */
-    length(){
-        let dp = this.dotProduct(this);
-        return Math.sqrt(dp);
+    get length(){
+        if(isNaN(this._length)){
+            this._length = Math.sqrt(this.dotProduct(this));
+        }
+        return this._length;
+
+    }
+
+    /**
+     * Calculates cosine between two vectors.
+     * @param {Vector3D} vec2 
+     * @returns Number - Cosine between two vectors
+     */
+
+    cosineBetween(vec2){
+        this._vectorTypeOrError(vec2);
+        return this.dotProduct(vec2)/(this.length*vec2.length);
+    }
+
+    /**
+     * Returns normalized version of the vector as a separate instance.
+     * @returns Vector3D
+     */
+
+    getUnit(){
+        return this.multiplyByScalar(1/this.length);
     }
 
 
@@ -103,6 +131,21 @@ export class Vector3D{
         return new Vector3D(x,y,z);
     
     }
+
+    /**
+     * Normalizes current vector instance.
+     * @returns Vector3D
+     */
+
+    normalize(){
+        const length = this.length;
+        this.x /= length;
+        this.y /= length;
+        this.z /= length;
+        return this;
+    }
+
+    
 
     /**
      * Multiplies the vector by a scalar and return result as new Vector3D
@@ -127,8 +170,10 @@ export class Vector3D{
 
     subtract(vec2){
         this._vectorTypeOrError(vec2);
-        const negVec2 = vec2.multiplyByScalar(-1);
-        return this.add(negVec2);
+        const x = this.x - vec2.x;
+        const y = this.y - vec2.y;
+        const z = this.z - vec2.z;
+        return new Vector3D(x,y,z);
     }
 
 
@@ -138,7 +183,10 @@ export class Vector3D{
      * @param {Vector3D} vec2 
      */
     addSelf(vec2){
-       this._copyVectorToSelf(this.add(vec2)); 
+       this.x += vec2.x;
+       this.y += vec2.y;
+       this.z += vec2.z;
+       return this;
     }
 
     /**
@@ -147,7 +195,10 @@ export class Vector3D{
      */
 
     multiplySelfByScalar(scalar){
-        this._copyVectorToSelf(this.multiplyByScalar(scalar));
+        this.x *= scalar;
+        this.y *= scalar;
+        this.z *= scalar;
+        return this;
     }
 
     /**
@@ -156,7 +207,10 @@ export class Vector3D{
      */
 
     subtractSelf(vec2){
-        this._copyVectorToSelf(this.subtract(vec2));
+        this.x -= vec2.x;
+        this.y -= vec2.y;
+        this.z -= vec2.z;
+        return this;
     }
     
 }
