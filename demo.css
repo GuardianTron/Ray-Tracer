@@ -35,7 +35,7 @@
 }
 
 
-#demo_container form label {
+#demo_container fieldset label {
     grid-column-start: span 2;
 }
 
@@ -53,7 +53,7 @@
 
 /* expand for larger screens */
 @media screen and (min-width: 475px) {
-    #demo_container form {
+    #demo_container fieldset {
         max-width: 25rem;
         grid-template-columns:
             10rem 10rem 5rem;

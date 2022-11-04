@@ -145,7 +145,7 @@ function setUpDemo(){
         const animateDivisor = (shouldAnimate)? 300 : 1;
         const pixelsPerFrame = canvas.width * canvas.height/animateDivisor;
     
-        const rasterizer = new Rasterizer(canvas,camera,shapes);
+        const rasterizer = new Rasterizer(canvas,camera,shapes,lights);
     
         function animate(timestep){
             for(let i = 0; i < pixelsPerFrame && !rasterizer.doneProcessing(); i++){
