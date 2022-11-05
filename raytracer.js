@@ -7,6 +7,10 @@ import { Rasterizer } from "./libraries/rasterizer.js";
 import { Light, PointLight, DirectionalLight, BookDiffuseShader, BookSpecularShader} from "./libraries/lighting.js";
 
 
+
+
+
+
 function slideHandlerMaker(outputId) {
     const outputElement = document.getElementById(outputId);
     return function(event){
@@ -69,6 +73,16 @@ function setUpDemo(){
     const ambient_slider = controls.elements['ambient_light'];
     const point_slider = controls.elements['point_light'];
     const directional_slider = controls.elements['directional_light'];
+
+    //set initial output values.
+
+    document.getElementById('view_width_out').value = width_slider.value;
+    document.getElementById('view_height_out').value = height_slider.value;
+    document.getElementById('distance_out').value = distance_slider.value;
+    
+    document.getElementById('ambient_light_out').value = ambient_slider.value;
+    document.getElementById('point_light_out').value = point_slider.value;
+    document.getElementById('directional_light_out').value = directional_slider.value;
     
     
     width_slider.addEventListener('input',slideHandlerMaker('view_width_out'));
