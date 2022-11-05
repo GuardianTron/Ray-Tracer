@@ -6,46 +6,7 @@ import { Camera } from "./libraries/camera.js";
 import { Rasterizer } from "./libraries/rasterizer.js";
 import { Light, PointLight, DirectionalLight, BookDiffuseShader, BookSpecularShader} from "./libraries/lighting.js";
 
-const canvas = document.getElementById("ray_canvas");
-const origin = new Vector3D(0,0,0);
 
-const shapes = [
-    new Sphere(new Vector3D(0,-1,3),1, new Color(255,0,0),new BookDiffuseShader(),new BookSpecularShader(500)),
-    new Sphere(new Vector3D(2,0,4),1, new Color(0,0,255),new BookDiffuseShader(),new BookSpecularShader(500)),
-    new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0),new BookDiffuseShader(),new BookSpecularShader(10)),
-    new Sphere(new Vector3D(0,-5001,0),5000, new Color(255,255,0),new BookDiffuseShader(),new BookSpecularShader(1000))
-];
-
-const ambientLight = new Light(0.2);
-const pointLight = new PointLight(0.6,new Vector3D(2,1,0));
-const directionalLight = new DirectionalLight(0.2,new Vector3D(1,4,4));
-
-const lights = [
-    ambientLight,
-    pointLight,
-    directionalLight
-];
-
-
-
-const controls = document.getElementById('config');
-
-const width_slider = controls.elements['view_width'];
-const height_slider = controls.elements['view_height'];
-const distance_slider = controls.elements['distance'];
-
-const ambient_slider = controls.elements['ambient_light'];
-const point_slider = controls.elements['point_light'];
-const directional_slider = controls.elements['directional_light'];
-
-
-width_slider.addEventListener('input',slideHandlerMaker('view_width_out'));
-height_slider.addEventListener('input',slideHandlerMaker('view_height_out'));
-distance_slider.addEventListener('input',slideHandlerMaker('distance_out'));
-
-ambient_slider.addEventListener('input',slideHandlerMaker('ambient_light_out'));
-point_slider.addEventListener('input',slideHandlerMaker('point_light_out'));
-directional_slider.addEventListener('input',slideHandlerMaker('directional_light_out'));
 
 window.addEventListener('load',(event)=>{
     document.getElementById('view_width_out').value = width_slider.value;
@@ -97,29 +58,44 @@ async function loadDemo(url){
 function setUpDemo(){
     const canvas = document.getElementById("ray_canvas");
     const origin = new Vector3D(0,0,0);
-
+    
     const shapes = [
-        new Sphere(new Vector3D(0,-1,3),1, new Color(255,0,0)),
-        new Sphere(new Vector3D(2,0,4),1, new Color(0,0,255)),
-        new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0))
+        new Sphere(new Vector3D(0,-1,3),1, new Color(255,0,0),new BookDiffuseShader(),new BookSpecularShader(500)),
+        new Sphere(new Vector3D(2,0,4),1, new Color(0,0,255),new BookDiffuseShader(),new BookSpecularShader(500)),
+        new Sphere(new Vector3D(-2,0,4),1,new Color(0,255,0),new BookDiffuseShader(),new BookSpecularShader(10)),
+        new Sphere(new Vector3D(0,-5001,0),5000, new Color(255,255,0),new BookDiffuseShader(),new BookSpecularShader(1000))
     ];
-
+    
+    const ambientLight = new Light(0.2);
+    const pointLight = new PointLight(0.6,new Vector3D(2,1,0));
+    const directionalLight = new DirectionalLight(0.2,new Vector3D(1,4,4));
+    
+    const lights = [
+        ambientLight,
+        pointLight,
+        directionalLight
+    ];
+    
+    
+    
     const controls = document.getElementById('config');
-
+    
     const width_slider = controls.elements['view_width'];
     const height_slider = controls.elements['view_height'];
     const distance_slider = controls.elements['distance'];
-
-
+    
+    const ambient_slider = controls.elements['ambient_light'];
+    const point_slider = controls.elements['point_light'];
+    const directional_slider = controls.elements['directional_light'];
+    
+    
     width_slider.addEventListener('input',slideHandlerMaker('view_width_out'));
     height_slider.addEventListener('input',slideHandlerMaker('view_height_out'));
     distance_slider.addEventListener('input',slideHandlerMaker('distance_out'));
-
-
-
-    document.getElementById('view_width_out').value = width_slider.value;
-    document.getElementById('view_height_out').value = height_slider.value;
-    document.getElementById('distance_out').value = distance_slider.value;
+    
+    ambient_slider.addEventListener('input',slideHandlerMaker('ambient_light_out'));
+    point_slider.addEventListener('input',slideHandlerMaker('point_light_out'));
+    directional_slider.addEventListener('input',slideHandlerMaker('directional_light_out'));
     
     //create square canvas with same width as parent container
     const size = canvas.parentElement.offsetWidth;
