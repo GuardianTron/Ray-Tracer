@@ -7,24 +7,6 @@ import { Rasterizer } from "./libraries/rasterizer.js";
 import { Light, PointLight, DirectionalLight, BookDiffuseShader, BookSpecularShader} from "./libraries/lighting.js";
 
 
-
-window.addEventListener('load',(event)=>{
-    document.getElementById('view_width_out').value = width_slider.value;
-    document.getElementById('view_height_out').value = height_slider.value;
-    document.getElementById('distance_out').value = distance_slider.value;
-    
-    document.getElementById('ambient_light_out').value = ambient_slider.value;
-    document.getElementById('point_light_out').value = point_slider.value;
-    document.getElementById('directional_light_out').value = directional_slider.value;
-
-    //create square canvas with same width as parent container
-    const size = canvas.parentElement.offsetWidth;
-    canvas.width = size;
-    canvas.height = size;
-});
-
-
-
 function slideHandlerMaker(outputId) {
     const outputElement = document.getElementById(outputId);
     return function(event){
