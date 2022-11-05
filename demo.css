@@ -52,7 +52,7 @@
 }
 
 /* expand for larger screens */
-@media screen and (min-width: 475px) {
+@media screen and (min-width: 550px) {
     #demo_container fieldset {
         max-width: 25rem;
         grid-template-columns:
