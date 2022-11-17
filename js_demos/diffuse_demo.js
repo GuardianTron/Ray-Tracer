@@ -77,13 +77,18 @@ class DiffuseDemoDraw{
             const leftSurfacePoint = leftLightRay.getEndPoint(leftRaySurfaceInterceptParam);
             const rightSurfacePoint = rightLightRay.getEndPoint(rightRaySurfaceInterceptParam);
 
-            const oldWidth = this.ctx.lineWidth;
-            this.ctx.lineWidth = 10;
-            this._drawLine(leftSurfacePoint.x,leftSurfacePoint.y,rightSurfacePoint.x,rightSurfacePoint.y,'yellow');
-            this.ctx.lineWidth = oldWidth;
 
             this._drawLine(lightStart.x,lightStart.y,leftSurfacePoint.x,leftSurfacePoint.y,'green');
             this._drawLine(lightEnd.x,lightEnd.y,rightSurfacePoint.x,rightSurfacePoint.y,'green');
+
+            let intensity = Math.floor(255 * len.cosineBetween(new Vector2D(0,-1))); //note: normal in screen space
+            intensity = Math.max(0,intensity);
+            const shineColor = `rgb(${intensity},${intensity},0)`;
+            const oldWidth = this.ctx.lineWidth;
+        
+            this.ctx.lineWidth = 10;
+            this._drawLine(leftSurfacePoint.x,leftSurfacePoint.y,rightSurfacePoint.x,rightSurfacePoint.y,shineColor);
+            this.ctx.lineWidth = oldWidth;
 
         } 
 

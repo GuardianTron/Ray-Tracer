@@ -34,6 +34,14 @@ export default class Vector2D{
         this._y = y;
     }
 
+    dotProduct(vec2){
+        return this.x * vec2.x + this.y * vec2.y;
+    }
+
+    cosineBetween(vec2){
+        return this.dotProduct(vec2)/(this.length * vec2.length);
+    }
+
     normalize(){
         const length= this.length;
         this.x /= length;
