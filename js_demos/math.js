@@ -123,6 +123,55 @@ class Ray{
 
 }
 
+class LineSegment{
+
+    constructor(ray,length){
+        this.ray = ray;
+        this.length = length;
+    }
+     
+    get ray(){
+        return this._ray;
+    }
+
+    set ray(ray){
+        this._end = null;
+        this._ray = ray;
+    }
+
+    get start(){
+        return this.ray.origin;
+    }
+
+    set start(start){
+        this.ray.origin =start;
+        this._end = null; 
+    }
+
+    get end(){
+        if(!this._end){
+            this._end = this.ray.getEndPoint(this.length);
+        }
+        return this._end;
+    }
+
+    set end(end){
+        this._end = null;
+        let newDirection = end.subtract(this.ray.origin);
+        this.length = newDirection.length;
+        this.ray.direction = newDirection;
+    }
+
+    get length(){
+        return this._length;
+    }
+
+    set length(length){
+        this._end = null;
+        this._length = length;
+    }
+}
+
 class Matrix2D{
 
     constructor(a,b,c,d){
@@ -177,4 +226,4 @@ Matrix2D.fromVectors = function(vec1,vec2){
     return new Matrix2D(vec1.x,vec2.x,vec1.y,vec2.y);
 }
 
-export {Vector2D,Ray,Matrix2D};
+export {Vector2D,Ray,Matrix2D, LineSegment};
