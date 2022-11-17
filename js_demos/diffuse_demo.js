@@ -1,5 +1,4 @@
 "use strict";
-import Light from '../libraries/lighting.js';
 import {Vector2D,Ray,LineSegment} from './math.js';
 const holder = document.getElementById('diffuse_demo_container');
 const canvas = document.createElement('canvas');
@@ -59,48 +58,32 @@ class DiffuseDemoDraw{
         
     }
 
-    drawVectorToward = (endX,endY) =>{
-        const vecOrigin = this.normal.start;
-        let len = new Vector2D(endX - vecOrigin.x,endY - vecOrigin.y);
-        const lightRay = new Ray(vecOrigin,len)
-        const lightRayLine = new LineSegment(lightRay,this.normal.length);
-        this._drawLineSegment(lightRayLine,'blue');
+    drawLight = (endX,endY) =>{
 
-        //draw "light"
-        const lenPerp = len.getPerp();
-        const lightBar = new LightBar(new Ray(lightRayLine.end,lenPerp), this.normal.length * .3);
-        this._drawLineSegment(lightBar.leftSegment,'green');
-        this._drawLineSegment(lightBar.rightSegment,'green');
+        const light = new Light(this.normal,this.surfaceRay,endX,endY);
+        this._drawLineSegment(light.directionRaySegment,'blue');
+
+        //draw "light emitter"
+        this._drawLineSegment(light.lightBar.leftSegment,'green');
+        this._drawLineSegment(light.lightBar.rightSegment,'green');
         
+        //draw left and right rays
+        if(light.leftRaySegment) this._drawLineSegment(light.leftRaySegment,'green');
+        if(light.rightRaySegment) this._drawLineSegment(light.rightRaySegment,'green');
+
         //draw light on surface
-        const leftLightRay = new Ray(lightBar.leftEnd,len);
-        const rightLightRay = new Ray(lightBar.rightEnd,len);
+        this._drawLineSegment(light.lightBar.leftSegment,'green');
+        this._drawLineSegment(light.lightBar.rightSegment,'green');
 
-        const leftRaySurfaceInterceptParam = leftLightRay.getIntersectionParameter(this.surfaceRay);
-        const rightRaySurfaceInterceptParam = rightLightRay.getIntersectionParameter(this.surfaceRay);
-        if(!(isNaN(leftRaySurfaceInterceptParam) || isNaN(rightRaySurfaceInterceptParam))){
-            const leftSurfacePoint = leftLightRay.getEndPoint(leftRaySurfaceInterceptParam);
-            const rightSurfacePoint = rightLightRay.getEndPoint(rightRaySurfaceInterceptParam);
-
-            /**
-             * Fix:
-             * if intercept params both negative, draw light as here.
-             * if one param positive, use it's light bar to calc endpoint instead.
-             */
-
-            this._drawLine(lightBar.leftEnd.x,lightBar.leftEnd.y,leftSurfacePoint.x,leftSurfacePoint.y,'green');
-            this._drawLine(lightBar.rightEnd.x,lightBar.rightEnd.y,rightSurfacePoint.x,rightSurfacePoint.y,'green');
-
-            let intensity = Math.floor(255 * len.cosineBetween(this.normal.ray.direction));
-            intensity = Math.max(0,intensity);
-            const shineColor = `rgb(${intensity},${intensity},0)`;
-            const oldWidth = this.ctx.lineWidth;
+        let intensity = Math.floor(255 * light.directionRaySegment.ray.direction.cosineBetween(this.normal.ray.direction));
+        intensity = Math.max(0,intensity);
+        const shineColor = `rgb(${intensity},${intensity},0)`;
+        const oldWidth = this.ctx.lineWidth;
         
-            this.ctx.lineWidth = 10;
-            this._drawLine(leftSurfacePoint.x,leftSurfacePoint.y,rightSurfacePoint.x,rightSurfacePoint.y,shineColor);
-            this.ctx.lineWidth = oldWidth;
+        this.ctx.lineWidth = 10;
+        this._drawLine(light.leftIntersection.x,light.leftIntersection.y,light.rightIntersection.x,light.rightIntersection.y,shineColor);
+        this.ctx.lineWidth = oldWidth;
 
-        } 
 
 
 
@@ -142,6 +125,78 @@ class LightBar{
 
 }
 
+class Light{
+
+    constructor(normalLineSegment,surfaceRay,endX,endY){
+        this.normal = normalLineSegment;
+        this.surfaceRay = surfaceRay;
+        this.leftRaySegment = null;
+        this.rightRaySegment = null;
+        this.calculateLightSegments(endX,endY);
+    }
+
+    calculateLightSegments(endX,endY){
+        this._calcLightDirectionSegment(endX,endY);
+        this._calcLightBar();
+        this._calcLeftRay();
+        this._calcRightRay();
+    }
+
+    _calcLightDirectionSegment(endX,endY){
+        const origin = this.normal.start;
+        const dir = new Vector2D(endX - origin.x, endY - origin.y);
+        this.directionRaySegment = new LineSegment(new Ray(origin,dir),this.normal.length);
+    }
+
+    _calcLightBar(){
+        const perp = this.directionRaySegment.ray.direction.getPerp();
+        this.lightBar = new LightBar(new Ray(this.directionRaySegment.end,perp),this.normal.length * .3);
+
+
+    }
+
+    _calcRightRay(){
+        const lightRay = new Ray(this.lightBar.rightEnd,this.directionRaySegment.ray.direction);
+        const interceptParam = lightRay.getIntersectionParameter(this.surfaceRay);
+        //ray either not rendered or going in wrong direction, so shorten end
+        if(isNaN(interceptParam) || interceptParam > 0){
+            if(isNaN(interceptParam)){
+                this.lightBar.rightSegment.length = 0;
+            }
+            else{
+                this.lightBar.rightSegment.end = this.lightBar.rightSegment.ray.getIntersectionPoint(this.surfaceRay);
+            }
+        
+            this.rightIntersection = this.lightBar.rightSegment.end;
+        }
+        else{
+            this.rightRaySegment = new LineSegment(lightRay,interceptParam);
+            this.rightIntersection = this.rightRaySegment.end;
+        }
+    }
+
+
+
+    _calcLeftRay(){
+        const lightRay = new Ray(this.lightBar.leftEnd,this.directionRaySegment.ray.direction);
+        const interceptParam = lightRay.getIntersectionParameter(this.surfaceRay);
+        //ray either not rendered or going in wrong direction, so shorten end
+        if(isNaN(interceptParam) || interceptParam > 0){
+            if(isNaN(interceptParam)){
+                this.lightBar.leftSegment.length = 0;
+            }
+            else{
+                this.lightBar.leftSegment.end = this.lightBar.leftSegment.ray.getIntersectionPoint(this.surfaceRay);
+            }
+            this.leftIntersection = this.lightBar.leftEnd;
+        }
+        else{
+            this.leftRaySegment = new LineSegment(lightRay,interceptParam);
+            this.leftIntersection = this.leftRaySegment.end;
+        }
+    }
+}
+
 
 
 
@@ -153,12 +208,12 @@ class LightBar{
 
 const drawer = new DiffuseDemoDraw(canvas);
 drawer.drawNormal();
-drawer.drawVectorToward(0,0)
+drawer.drawLight(0,0)
 canvas.addEventListener('mousemove',(e)=>{
     drawer.clear();
     drawer.drawNormal();
     const boundingRect = canvas.getBoundingClientRect();
-    drawer.drawVectorToward(e.clientX-boundingRect.left,e.clientY - boundingRect.top);
+    drawer.drawLight(e.clientX-boundingRect.left,e.clientY - boundingRect.top);
     
 });
 

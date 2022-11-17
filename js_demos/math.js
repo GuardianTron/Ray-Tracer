@@ -118,6 +118,13 @@ class Ray{
         return paramVector.x;
 
     }
+    
+    getIntersectionPoint(ray2){
+        const param = this.getIntersectionParameter(ray2);
+        if(isNaN(param)) return null;
+
+        return this.getEndPoint(param);
+    }
 
 
 
