@@ -1,4 +1,5 @@
 "use strict";
+import {Vector2D,Ray} from './math.js';
 const holder = document.getElementById('diffuse_demo_container');
 const canvas = document.createElement('canvas');
 canvas.width = holder.offsetWidth;
@@ -20,6 +21,7 @@ class DiffuseDemoDraw{
         this.vecLength = Math.min(this.height - 2 * verticalMargin,this.width/2 - horizontalMargin) ;
         const vecOriginY = this.height - verticalMargin;
         this.vecOrigin = new Vector2D(vecOriginX,vecOriginY)
+        this.surfaceRay = new Ray(new Vector2D(0,vecOriginY),new Vector2D(1,0));
         this.ctx.lineWidth = 2;
      
     }
@@ -32,11 +34,19 @@ class DiffuseDemoDraw{
         this.ctx.stroke();
     }
 
+    _drawRay = (ray,length,color) => {
+        const end = ray.getEndPoint(length);
+        const start = ray.origin;
+        this._drawLine(start.x,start.y,end.x,end.y,color);
+    }
+
     drawNormal =() =>{
         const startX = this.vecOrigin.x;
         const startY = this.vecOrigin.y;
 
         this._drawLine(startX,startY,startX,startY - this.vecLength,'black');
+        this._drawRay(this.surfaceRay,this.width,'black');
+        
 
         
 
@@ -45,18 +55,41 @@ class DiffuseDemoDraw{
 
     drawVectorToward = (endX,endY) =>{
         let len = new Vector2D(endX - this.vecOrigin.x,endY - this.vecOrigin.y);
-        len.normalize().scale(this.vecLength);
-
-
-        const vecEnd = this.vecOrigin.add(len);
-        this._drawLine(this.vecOrigin.x,this.vecOrigin.y,vecEnd.x,vecEnd.y,'blue');
+        const lightRay = new Ray(this.vecOrigin,len)
+        const lightRayEnd = lightRay.getEndPoint(this.vecLength);
+        this._drawLine(this.vecOrigin.x,this.vecOrigin.y,lightRayEnd.x,lightRayEnd.y,'blue');
 
         //draw "light"
         const lenPerp = len.getPerp();
-        lenPerp.normalize().scale(this.vecLength*.15);
-        const lightStart = vecEnd.subtract(lenPerp);
-        const lightEnd = vecEnd.add(lenPerp);
+        const lightBar = new Ray(lightRayEnd,lenPerp);
+        const barLength = this.vecLength * .15;
+        const lightStart = lightBar.getEndPoint(barLength);
+        const lightEnd = lightBar.getEndPoint(-1*barLength);
         this._drawLine(lightStart.x,lightStart.y,lightEnd.x,lightEnd.y,'green');
+        
+        //draw light on surface
+        const leftLightRay = new Ray(lightStart,len);
+        const rightLightRay = new Ray(lightEnd,len);
+
+        const leftRaySurfaceInterceptParam = leftLightRay.getIntersectionParameter(this.surfaceRay);
+        const rightRaySurfaceInterceptParam = rightLightRay.getIntersectionParameter(this.surfaceRay);
+        if(!(isNaN(leftRaySurfaceInterceptParam) || isNaN(rightRaySurfaceInterceptParam))){
+            const leftSurfacePoint = leftLightRay.getEndPoint(leftRaySurfaceInterceptParam);
+            const rightSurfacePoint = rightLightRay.getEndPoint(rightRaySurfaceInterceptParam);
+
+            const oldWidth = this.ctx.lineWidth;
+            this.ctx.lineWidth = 10;
+            this._drawLine(leftSurfacePoint.x,leftSurfacePoint.y,rightSurfacePoint.x,rightSurfacePoint.y,'yellow');
+            this.ctx.lineWidth = oldWidth;
+
+            this._drawLine(lightStart.x,lightStart.y,leftSurfacePoint.x,leftSurfacePoint.y,'green');
+            this._drawLine(lightEnd.x,lightEnd.y,rightSurfacePoint.x,rightSurfacePoint.y,'green');
+
+        } 
+
+
+
+        
 
     }
 
@@ -71,77 +104,7 @@ class DiffuseDemoDraw{
 
 }
 
-class Vector2D{
 
-    constructor(x,y){
-        this.x = x;
-        this.y = y;
-    }
-    
-    get x(){
-        return this._x;
-    }
-
-    set x(x){
-        this._length = NaN;
-        this._x = x;
-    }
-
-    get y(){
-        return this._y;
-    }
-
-    get length(){
-        if(isNaN(this._length)){
-            this._length = Math.sqrt(this.x * this. x + this.y * this.y);
-        }
-        return this._length;
-    }
-
-    
-
-    set y(y){
-        this._length = NaN;
-        this._y = y;
-    }
-
-    normalize(){
-        const length= this.length;
-        this.x /= length;
-        this.y /= length;
-        return this;
-    }
-
-    scale(scalar){
-        this.x *= scalar;
-        this.y *= scalar;
-        return this;
-    }
-
-    add(vec2){
-        const newX = this.x + vec2.x;
-        const newY = this.y + vec2.y;
-        return new Vector2D(newX,newY);
-    }
-
-    subtract(vec2){
-        const newX = this.x - vec2.x;
-        const newY = this.y - vec2.y;
-        return new Vector2D(newX,newY);
-    }
-
-    getPerp(){
-        return new Vector2D(this.y,this.x * -1);
-    }
-
-    copy(){
-        return new Vector2D(this.x,this.y);
-    }
-
-
-
-
-}
 
 
 
