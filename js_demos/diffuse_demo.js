@@ -20,7 +20,7 @@ class DiffuseDemoDraw{
         const horizontalMargin = Math.floor(this.width/10);
         this.vecLength = Math.min(this.height - 2 * verticalMargin,this.width/2 - horizontalMargin) ;
         const vecOriginY = this.height - verticalMargin;
-        this.vecOrigin = new Vector2D(vecOriginX,vecOriginY)
+        this.normalRay = new Ray(new Vector2D(vecOriginX,vecOriginY),new Vector2D(0,-1)); //ray in canvas space
         this.surfaceRay = new Ray(new Vector2D(0,vecOriginY),new Vector2D(1,0));
         this.ctx.lineWidth = 2;
      
@@ -41,10 +41,8 @@ class DiffuseDemoDraw{
     }
 
     drawNormal =() =>{
-        const startX = this.vecOrigin.x;
-        const startY = this.vecOrigin.y;
 
-        this._drawLine(startX,startY,startX,startY - this.vecLength,'black');
+        this._drawRay(this.normalRay,this.vecLength,'black');
         this._drawRay(this.surfaceRay,this.width,'black');
         
 
@@ -54,10 +52,11 @@ class DiffuseDemoDraw{
     }
 
     drawVectorToward = (endX,endY) =>{
-        let len = new Vector2D(endX - this.vecOrigin.x,endY - this.vecOrigin.y);
-        const lightRay = new Ray(this.vecOrigin,len)
+        const vecOrigin = this.normalRay.origin;
+        let len = new Vector2D(endX - vecOrigin.x,endY - vecOrigin.y);
+        const lightRay = new Ray(vecOrigin,len)
         const lightRayEnd = lightRay.getEndPoint(this.vecLength);
-        this._drawLine(this.vecOrigin.x,this.vecOrigin.y,lightRayEnd.x,lightRayEnd.y,'blue');
+        this._drawLine(vecOrigin.x,vecOrigin.y,lightRayEnd.x,lightRayEnd.y,'blue');
 
         //draw "light"
         const lenPerp = len.getPerp();
@@ -81,7 +80,7 @@ class DiffuseDemoDraw{
             this._drawLine(lightStart.x,lightStart.y,leftSurfacePoint.x,leftSurfacePoint.y,'green');
             this._drawLine(lightEnd.x,lightEnd.y,rightSurfacePoint.x,rightSurfacePoint.y,'green');
 
-            let intensity = Math.floor(255 * len.cosineBetween(new Vector2D(0,-1))); //note: normal in screen space
+            let intensity = Math.floor(255 * len.cosineBetween(this.normalRay.direction));
             intensity = Math.max(0,intensity);
             const shineColor = `rgb(${intensity},${intensity},0)`;
             const oldWidth = this.ctx.lineWidth;
