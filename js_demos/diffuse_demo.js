@@ -27,11 +27,13 @@ class DiffuseDemoDraw {
     }
 
     _drawLine = (startX, startY, endX, endY, color) => {
+        const oldColor = this.ctx.strokeStyle;
         this.ctx.strokeStyle = color;
         this.ctx.beginPath();
         this.ctx.moveTo(startX, startY);
         this.ctx.lineTo(endX, endY);
         this.ctx.stroke();
+        this.ctx.strokeStyle = oldColor;
     }
 
     _drawRay = (ray, length, color) => {
@@ -44,6 +46,23 @@ class DiffuseDemoDraw {
         const start = lineSegment.start;
         const end = lineSegment.end;
         this._drawLine(start.x, start.y, end.x, end.y, color);
+    }
+
+    _drawShape(points,color){
+        const oldColor = this.ctx.fillColor;
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+        const startPoint = points.unshift();
+        this.ctx.moveTo(startPoint.x,startPoint.y);
+        for(const point of points){
+            this.ctx.lineTo(point.x,point.y);
+        }
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.fillColor = oldColor;
+
+
+
     }
 
 
@@ -62,6 +81,28 @@ class DiffuseDemoDraw {
 
         const light = new Light(this.normal, this.surfaceRay, endX, endY);
         this._drawLineSegment(light.directionRaySegment, 'blue');
+
+        //draw light
+
+        const points = [
+            light.lightBar.leftSegment.end,
+            light.lightBar.rightSegment.end,
+            ];
+        if(light.rightRaySegment){
+            points.push(light.rightRaySegment.end);
+        }
+        else{
+            points.push(light.rightIntersection);
+        }
+
+        if(light.leftRaySegment){
+            points.push(light.leftRaySegment.end);
+        }
+        else{
+            points.push(light.leftIntersection);
+        }
+        this._drawShape(points,'rgba(255,255,0,0.25)');
+
 
         //draw "light emitter"
         this._drawLineSegment(light.lightBar.leftSegment, 'green');
