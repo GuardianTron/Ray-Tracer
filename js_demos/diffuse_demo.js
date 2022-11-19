@@ -2,19 +2,40 @@
 import { Vector2D, Ray, LineSegment } from './math.js';
 const holder = document.getElementById('diffuse_demo_container');
 const canvas = document.createElement('canvas');
-canvas.width = holder.offsetWidth;
-canvas.height = holder.offsetHeight;
 holder.appendChild(canvas);
 
-const ctx = canvas.getContext('2d');
 
 class DiffuseDemoDraw {
 
     constructor(canvas) {
-        this.ctx = canvas.getContext('2d');
-        this.width = canvas.width;
-        this.height = canvas.height;
+        this.canvas = canvas;
+        this.ctx = this.canvas.getContext('2d');
 
+        
+        this._calculateSizes();
+
+
+
+        if(ResizeObserver){
+            const observer = new ResizeObserver(this.redraw);
+            observer.observe(this.canvas);
+        }
+        else{
+            window.addEventListener('resize',this.redraw);  
+        }
+
+
+
+
+    }
+
+    _calculateSizes = () =>{
+        
+ 
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
+        this.ctx.lineWidth = 2;
+        
         const vecOriginX = Math.floor(this.width / 2)
         const verticalMargin = Math.floor(this.height / 10);
         const horizontalMargin = Math.floor(this.width / 10);
@@ -22,9 +43,18 @@ class DiffuseDemoDraw {
         const vecOriginY = this.height - verticalMargin;
         this.normal = new LineSegment(new Ray(new Vector2D(vecOriginX, vecOriginY), new Vector2D(0, -1)), vecLength); //ray in canvas space
         this.surfaceRay = new Ray(new Vector2D(0, vecOriginY), new Vector2D(1, 0));
-        this.ctx.lineWidth = 2;
 
     }
+
+    get width(){
+        return this.canvas.width;
+    }
+
+    get height(){
+        return this.canvas.height;
+    }
+
+    
 
     _drawLine = (startX, startY, endX, endY, color) => {
         const oldColor = this.ctx.strokeStyle;
@@ -79,7 +109,8 @@ class DiffuseDemoDraw {
 
     drawLight = (endX, endY) => {
 
-        const light = new Light(this.normal, this.surfaceRay, endX, endY);
+        const light = new Light(this.normal, this.surfaceRay, endX, endY,this.width);
+
         this._drawLineSegment(light.directionRaySegment, 'blue');
 
         //draw light
@@ -138,6 +169,15 @@ class DiffuseDemoDraw {
 
     clear = () => {
         this.ctx.clearRect(0, 0, this.width, this.height);
+    }
+
+    redraw = () => {
+        
+        this._calculateSizes();
+
+        this.drawNormal();
+        this.drawLight(0,0);
+
     }
 
 }
@@ -251,12 +291,12 @@ class Light {
 
 const drawer = new DiffuseDemoDraw(canvas);
 drawer.drawNormal();
-drawer.drawLight(0, 0)
+drawer.drawLight(0,0);
 canvas.addEventListener('mousemove', (e) => {
     drawer.clear();
     drawer.drawNormal();
     const boundingRect = canvas.getBoundingClientRect();
-    drawer.drawLight(e.clientX - boundingRect.left, e.clientY - boundingRect.top);
+    drawer.drawLight((e.clientX - boundingRect.left)*(canvas.width/boundingRect.width), (e.clientY - boundingRect.top)*(canvas.height/boundingRect.height));
 
 });
 
