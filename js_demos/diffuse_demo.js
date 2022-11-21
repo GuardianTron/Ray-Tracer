@@ -292,11 +292,26 @@ class Light {
 const drawer = new DiffuseDemoDraw(canvas);
 drawer.drawNormal();
 drawer.drawLight(0,0);
-canvas.addEventListener('mousemove', (e) => {
+
+function animateDemo(x,y){
     drawer.clear();
     drawer.drawNormal();
     const boundingRect = canvas.getBoundingClientRect();
-    drawer.drawLight((e.clientX - boundingRect.left)*(canvas.width/boundingRect.width), (e.clientY - boundingRect.top)*(canvas.height/boundingRect.height));
+    drawer.drawLight((x - boundingRect.left)*(canvas.width/boundingRect.width), (y - boundingRect.top)*(canvas.height/boundingRect.height));
 
-});
+}
+
+if(window.PointerEvent){
+    console.log('pointer event');
+    canvas.addEventListener('pointermove',(e) =>{
+        if(e.isPrimary) animateDemo(e.x,e.y);
+    });
+}
+else{ //mouse pointer
+    console.log('mouse event');
+    canvas.addEventListener('mousemove', (e) => {
+        animateDemo(x,y);
+
+    });
+}
 
