@@ -1,111 +1,14 @@
 "use strict";
 import { Vector2D, Ray, LineSegment } from './math.js';
+import { DemoDrawBase} from "./demo_base.js";
 const holder = document.getElementById('diffuse_demo_container');
 const canvas = document.createElement('canvas');
 holder.appendChild(canvas);
 
 
-class DiffuseDemoDraw {
+class DiffuseDemoDraw extends DemoDrawBase{
 
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = this.canvas.getContext('2d');
-
-        
-        this._calculateSizes();
-
-
-
-        if(ResizeObserver){
-            const observer = new ResizeObserver(this.redraw);
-            observer.observe(this.canvas);
-        }
-        else{
-            window.addEventListener('resize',this.redraw);  
-        }
-
-
-
-
-    }
-
-    _calculateSizes = () =>{
-        
- 
-        this.canvas.width = this.canvas.clientWidth;
-        this.canvas.height = this.canvas.clientHeight;
-        this.ctx.lineWidth = 2;
-        
-        const vecOriginX = Math.floor(this.width / 2)
-        const verticalMargin = Math.floor(this.height / 10);
-        const horizontalMargin = Math.floor(this.width / 10);
-        const vecLength = Math.min(this.height - 2 * verticalMargin, this.width / 2 - horizontalMargin);
-        const vecOriginY = this.height - verticalMargin;
-        this.normal = new LineSegment(new Ray(new Vector2D(vecOriginX, vecOriginY), new Vector2D(0, -1)), vecLength); //ray in canvas space
-        this.surfaceRay = new Ray(new Vector2D(0, vecOriginY), new Vector2D(1, 0));
-
-    }
-
-    get width(){
-        return this.canvas.width;
-    }
-
-    get height(){
-        return this.canvas.height;
-    }
-
-    
-
-    _drawLine = (startX, startY, endX, endY, color) => {
-        const oldColor = this.ctx.strokeStyle;
-        this.ctx.strokeStyle = color;
-        this.ctx.beginPath();
-        this.ctx.moveTo(startX, startY);
-        this.ctx.lineTo(endX, endY);
-        this.ctx.stroke();
-        this.ctx.strokeStyle = oldColor;
-    }
-
-    _drawRay = (ray, length, color) => {
-        const end = ray.getEndPoint(length);
-        const start = ray.origin;
-        this._drawLine(start.x, start.y, end.x, end.y, color);
-    }
-
-    _drawLineSegment(lineSegment, color) {
-        const start = lineSegment.start;
-        const end = lineSegment.end;
-        this._drawLine(start.x, start.y, end.x, end.y, color);
-    }
-
-    _drawShape(points,color){
-        const oldColor = this.ctx.fillColor;
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-        const startPoint = points.unshift();
-        this.ctx.moveTo(startPoint.x,startPoint.y);
-        for(const point of points){
-            this.ctx.lineTo(point.x,point.y);
-        }
-        this.ctx.closePath();
-        this.ctx.fill();
-        this.ctx.fillColor = oldColor;
-
-
-
-    }
-
-
-    drawNormal = () => {
-
-        this._drawLineSegment(this.normal, 'black');
-        this._drawRay(this.surfaceRay, this.width, 'black');
-
-
-
-
-
-    }
+  
 
     drawLight = (endX, endY) => {
 
@@ -164,23 +67,9 @@ class DiffuseDemoDraw {
 
 
     }
-
-
-
-    clear = () => {
-        this.ctx.clearRect(0, 0, this.width, this.height);
-    }
-
-    redraw = () => {
-        
-        this._calculateSizes();
-
-        this.drawNormal();
-        this.drawLight(0,0);
-
-    }
-
 }
+
+
 
 class LightBar {
     constructor(ray, length) {
