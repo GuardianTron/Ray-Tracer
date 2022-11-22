@@ -47,8 +47,8 @@ class DiffuseDemoDraw extends DemoDrawBase{
         this._drawLineSegment(light.lightBar.leftSegment, 'green');
         this._drawLineSegment(light.lightBar.rightSegment, 'green');
 
-        if (light.leftIntersection && light.rightIntersection) {
-            let intensity = Math.floor(255 * light.directionRaySegment.ray.direction.cosineBetween(this.normal.ray.direction));
+        if (light.leftIntersection && light.rightIntersection && light.directionRaySegment.vector.cosineBetween(this.normal.vector) > 0 ) {
+            let intensity = Math.floor(255 * light.directionRaySegment.vector.cosineBetween(this.normal.vector));
             intensity = Math.max(0, intensity);
             const shineColor = `rgb(${intensity},${intensity},0)`;
             const oldWidth = this.ctx.lineWidth;
@@ -112,14 +112,14 @@ class Light extends LightVector {
     }
 
     _calcLightBar() {
-        const perp = this.directionRaySegment.ray.direction.getPerp();
+        const perp = this.directionRaySegment.vector.getPerp();
         this.lightBar = new LightBar(new Ray(this.directionRaySegment.end, perp), this.normal.length * .3);
 
 
     }
 
     _calcRightRay() {
-        const lightRay = new Ray(this.lightBar.rightEnd, this.directionRaySegment.ray.direction);
+        const lightRay = new Ray(this.lightBar.rightEnd, this.directionRaySegment.unitVector);
         const interceptParam = lightRay.getIntersectionParameter(this.surfaceRay);
         //ray either not rendered or going in wrong direction, so shorten end
         if (isNaN(interceptParam)) {
@@ -140,7 +140,7 @@ class Light extends LightVector {
 
 
     _calcLeftRay() {
-        const lightRay = new Ray(this.lightBar.leftEnd, this.directionRaySegment.ray.direction);
+        const lightRay = new Ray(this.lightBar.leftEnd, this.directionRaySegment.unitVector);
         const interceptParam = lightRay.getIntersectionParameter(this.surfaceRay);
         //ray either not rendered or going in wrong direction, so shorten end
         if (isNaN(interceptParam)) {
