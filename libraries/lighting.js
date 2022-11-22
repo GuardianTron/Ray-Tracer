@@ -207,6 +207,9 @@ class BookSpecularShader extends RTShaderBase{
         
         //ambient lighting. Doesn't affect specular intensity
         if(!lightDirection) return 0;
+
+        //make sure not behind surface
+        if(lightDirection.dotProduct(normal) <= 0) return 0;
         
         
         const reflection = lightDirection.subtract(normal.multiplyByScalar(2*normal.dotProduct(lightDirection)));
