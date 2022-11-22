@@ -150,4 +150,36 @@ class LightVector{
 
 }
 
-export {DemoDrawBase,LightVector};
+function runDemo(demoClass,containerId){
+        const container = document.getElementById(containerId);
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
+
+        const drawer = new demoClass(canvas);
+
+        function animateDemo(x,y){
+            drawer.clear();
+            drawer.drawNormal();
+            const boundingRect = canvas.getBoundingClientRect();
+            drawer.drawLight((x - boundingRect.left)*(canvas.width/boundingRect.width), (y - boundingRect.top)*(canvas.height/boundingRect.height));
+        
+        }
+
+        animateDemo(0,0);
+        if(window.PointerEvent){
+            console.log('pointer event');
+            canvas.addEventListener('pointermove',(e) =>{
+                if(e.isPrimary) animateDemo(e.x,e.y);
+            });
+        }
+        else{ //mouse pointer
+            console.log('mouse event');
+            canvas.addEventListener('mousemove', (e) => {
+                animateDemo(x,y);
+        
+            });
+        }
+        
+    }
+
+export {DemoDrawBase,LightVector, runDemo};
