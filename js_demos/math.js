@@ -69,7 +69,7 @@ export default class Vector2D{
 
     project(vec2){
         const scalar = vec2.dotProduct(this)/this.length;
-        return vec2.copy().scale(scalar);
+        return this.copy().scale(scalar);
     }
 
 
@@ -167,6 +167,15 @@ class LineSegment{
             this._end = this.ray.getEndPoint(this.length);
         }
         return this._end;
+    }
+
+    get vector(){
+        const direction = this.ray.direction;
+        return direction.scale(this.length);
+    }
+
+    get unitVector(){
+        return this.ray.direction;
     }
 
     set end(end){
