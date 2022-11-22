@@ -24,7 +24,7 @@ export default class DemoDrawBase {
 
     }
 
-    _calculateSizes = () =>{
+    _calculateSizes(){
         
  
         this.canvas.width = this.canvas.clientWidth;
@@ -91,7 +91,7 @@ export default class DemoDrawBase {
     }
 
 
-    drawNormal = () => {
+    drawNormal(){
 
         this._drawLineSegment(this.normal, 'black');
         this._drawRay(this.surfaceRay, this.width, 'black');
