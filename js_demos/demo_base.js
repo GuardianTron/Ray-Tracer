@@ -125,4 +125,29 @@ export default class DemoDrawBase {
 
 }
 
-export {DemoDrawBase};
+class LightVector{
+
+    constructor(normalLineSegment, surfaceRay, endX, endY, max_length = 600) {
+        this.normal = normalLineSegment;
+        this.surfaceRay = surfaceRay;
+        this.leftRaySegment = null;
+        this.rightRaySegment = null;
+        this.max_length = max_length;
+        this.calculateLightSegments(endX, endY);
+    }
+
+    calculateLightSegments(endX,endY){
+        this._calcLightDirectionSegment(endX,endY);
+    }
+
+    _calcLightDirectionSegment(endX, endY) {
+        const origin = this.normal.start;
+        const dir = new Vector2D(endX - origin.x, endY - origin.y);
+        this.directionRaySegment = new LineSegment(new Ray(origin, dir), this.normal.length);
+    }
+
+
+
+}
+
+export {DemoDrawBase,LightVector};

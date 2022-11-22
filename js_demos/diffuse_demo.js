@@ -1,6 +1,6 @@
 "use strict";
 import { Vector2D, Ray, LineSegment } from './math.js';
-import { DemoDrawBase} from "./demo_base.js";
+import { DemoDrawBase, LightVector } from "./demo_base.js";
 const holder = document.getElementById('diffuse_demo_container');
 const canvas = document.createElement('canvas');
 holder.appendChild(canvas);
@@ -97,19 +97,12 @@ class LightBar {
 
 }
 
-class Light {
+class Light extends LightVector {
 
-    constructor(normalLineSegment, surfaceRay, endX, endY, max_length = 600) {
-        this.normal = normalLineSegment;
-        this.surfaceRay = surfaceRay;
-        this.leftRaySegment = null;
-        this.rightRaySegment = null;
-        this.max_length = max_length;
-        this.calculateLightSegments(endX, endY);
-    }
+
 
     calculateLightSegments(endX, endY) {
-        this._calcLightDirectionSegment(endX, endY);
+        super.calculateLightSegments(endX,endY);
         this._calcLightBar();
         this._calcLeftRay();
         this._calcRightRay();
