@@ -3,6 +3,18 @@ import {Vector2D,Ray,LineSegment} from "./math.js";
 import {DemoDrawBase, LightVector, runDemo} from "./demo_base.js";
 
 class SpecularDemoDraw extends DemoDrawBase{
+
+    _calculateSizes(){
+        super._calculateSizes();
+        const rad = 22.5 / 180 * Math.PI;
+        const cameraRay = new Ray(this.normal.start,new Vector2D(Math.cos(rad),-1*Math.sin(rad)));
+        this.cameraSegment = new LineSegment(cameraRay,this.normal.length);
+    }
+
+    drawNormal = ()=>{
+        super.drawNormal();
+        this._drawLineSegment(this.cameraSegment,'green');
+    }
     
     drawLight = (x,y) =>{
         const canvasDiagnal = (new Vector2D(this.canvas.width,this.canvas.height)).length;
@@ -11,6 +23,8 @@ class SpecularDemoDraw extends DemoDrawBase{
         this._drawLineSegment(light.reflectedRaySegment,"purple");
 
     }
+
+
 
 
 }
