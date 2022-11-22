@@ -67,6 +67,13 @@ export default class Vector2D{
         return new Vector2D(newX,newY);
     }
 
+    project(vec2){
+        const scalar = vec2.dotProduct(this)/this.length;
+        return vec2.copy().scale(scalar);
+    }
+
+
+
     getPerp(){
         return new Vector2D(this.y,this.x * -1);
     }
