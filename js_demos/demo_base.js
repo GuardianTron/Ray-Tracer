@@ -13,7 +13,9 @@ export default class DemoDrawBase {
 
         if(ResizeObserver){
             const observer = new ResizeObserver(this.redraw);
-            observer.observe(this.canvas);
+            let element = this.canvas.parentElement;
+            if(!element) element = this.canvas;
+            observer.observe(element);
         }
         else{
             window.addEventListener('resize',this.redraw);  
@@ -120,6 +122,7 @@ export default class DemoDrawBase {
 
         this.drawNormal();
         this.drawLight(0,0);
+        console.log('redrawing');
 
     }
 

@@ -63,3 +63,8 @@
         grid-column-start: span 1;
     }
 }
+
+.demo_figure > canvas{
+    width: 100%;
+    height: auto;
+}
