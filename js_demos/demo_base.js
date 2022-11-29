@@ -122,7 +122,7 @@ export default class DemoDrawBase {
 
         this.drawNormal();
         this.drawLight(0,0);
-        console.log('redrawing');
+
 
     }
 
