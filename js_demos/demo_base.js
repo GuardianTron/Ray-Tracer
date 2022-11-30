@@ -172,13 +172,17 @@ function runDemo(demoClass,containerId){
         if(window.PointerEvent){
             console.log('pointer event');
             canvas.addEventListener('pointermove',(e) =>{
+                e.preventDefault();
                 if(e.isPrimary) animateDemo(e.x,e.y);
+                
             });
         }
         else{ //mouse pointer
             console.log('mouse event');
             canvas.addEventListener('mousemove', (e) => {
+                e.preventDefault();
                 animateDemo(x,y);
+
         
             });
         }
