@@ -49,6 +49,13 @@ export default class Light{
 
 class OccludableLight extends Light{
 
+    /**
+     * Tests if an object is blocking the light.
+     * @param {Vector3D} intersectionPoint 
+     * @param {Shape[]} shapes 
+     * @returns Boolean
+     */
+
     testForShadow(intersectionPoint,shapes=[]){
         return false;
     }
@@ -145,6 +152,7 @@ class DirectionalLight extends OccludableLight{
         }
         this._direction = direction;
     }
+
 
     testForShadow(intersectionPoint,shapes=[]){
 
