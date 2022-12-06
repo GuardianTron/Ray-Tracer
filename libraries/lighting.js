@@ -43,12 +43,23 @@ export default class Light{
 
 }
 
+/** 
+ * Base class for lights that can cast shadows
+ */
+
+class OccludableLight extends Light{
+
+    testForShadow(intersectionPoint,shapes=[]){
+        return false;
+    }
+}
+
 
 /**
  * Represents a points light.
  */
 
-class PointLight extends Light{
+class PointLight extends OccludableLight{
 
     /**
      * 
@@ -112,7 +123,7 @@ class PointLight extends Light{
  * Implements directional lighting.
  */
 
-class DirectionalLight extends Light{
+class DirectionalLight extends OccludableLight{
 
     /**
      * 
@@ -264,4 +275,4 @@ class BookSpecularShader extends RTShaderBase{
 }
 
 
-export {Light,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader};
+export {Light,OccludableLight,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader};
