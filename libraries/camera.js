@@ -2,7 +2,7 @@
 import { Shape } from "./shapes.js";
 import { Vector3D } from "./vector.js";
 import { Color } from "./color.js";
-import { Light,PointLight,DirectionalLight} from "./lighting.js";
+import { Light,OccludableLight} from "./lighting.js";
 
 
 /**
@@ -113,8 +113,7 @@ export default class Camera{
             let intensity = 0;
             const viewDirection = directionRay.multiplyByScalar(1);
             for(const light of lights){
-                if(light.testForShadow){
-;
+                if(light instanceof OccludableLight){
                     if(light.testForShadow(intersectionPoint,shapes)) continue;
                     const normal = intersectedShape.getNormal(intersectionPoint);
 
