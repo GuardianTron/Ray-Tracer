@@ -1,6 +1,7 @@
 "use strict";
 import { Vector3D } from "./vector.js";
 import { Shape } from "./shapes.js";
+const EPSILON = 0.001;
 
 /**
  * Base class for light. 
@@ -34,8 +35,14 @@ export default class Light{
         this._intensity = intensity;
     }
 
+    testForShadow(intersectionPoint,shapes=[]){
+        return false;
+    }
+
+
 
 }
+
 
 /**
  * Represents a points light.
@@ -81,6 +88,24 @@ class PointLight extends Light{
 
     }
 
+    testForShadow(intersectionPoint,shapes=[]){
+        let intersectsShape = false;
+        const direction = this.getDirection(intersectionPoint);
+        for( const shape of shapes){
+            const intersectionParams = shape.intersectsRayAt(intersectionPoint,direction);
+            for(const intersection of intersectionParams){
+                
+                if(intersection >= EPSILON && intersection < 1){
+                        
+                    intersectsShape = true;
+                    break;
+                }
+            }
+            
+        }
+        return intersectsShape;
+    }
+
 }
 
 /**
@@ -108,6 +133,23 @@ class DirectionalLight extends Light{
             throw new TypeError("Direction must be an instance of Vector3D");
         }
         this._direction = direction;
+    }
+
+    testForShadow(intersectionPoint,shapes=[]){
+
+        let intersectsShape = false;
+
+        for(const shape of shapes){
+            const intersectionParams = shape.intersectsRayAt(intersectionPoint,this.direction);
+            for( const intersection of intersectionParams){
+
+                if(intersection >= EPSILON && intersection < Infinity){
+                    intersectsShape = true;
+                    break;
+                }
+            }
+        }
+        return intersectsShape;
     }
 
 }
