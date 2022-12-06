@@ -106,18 +106,7 @@ export default class Camera{
      * @returns Color
      */
     traceRay(directionRay,shapes=[],lights=[]){
-        let tMin = Infinity;
-        let intersectedShape = null;
-        for( const shape of shapes){
-            const ts = shape.intersectsRayAt(this.origin,directionRay);
-            for( const t of ts){
-                if(t >= 1 && t < tMin){
-                    tMin = t;
-                    intersectedShape = shape;
-                }
-            }
-        }
-
+        const {tMin, intersectedShape} = this.testCameraIntersection(directionRay,shapes);
         if(intersectedShape){
             //apply lighting
             const intersectionPoint = this.origin.add(directionRay.multiplyByScalar(tMin));
@@ -142,6 +131,30 @@ export default class Camera{
         return null;
 
     }
+
+    /**
+     * Performs test for intersection between camera ray and shapes
+     * @param {Vector3D} directionRay 
+     * @param {Shape[]} shapes 
+     * @returns {Number, Shape}
+     */
+
+    testCameraIntersection(directionRay,shapes=[]){
+        let tMin = Infinity;
+        let intersectedShape = null;
+        for( const shape of shapes){
+            const ts = shape.intersectsRayAt(this.origin,directionRay);
+            for( const t of ts){
+                if(t >= 1 && t < tMin){
+                    tMin = t;
+                    intersectedShape = shape;
+                }
+            }
+        }
+        return {tMin: tMin, intersectedShape: intersectedShape};
+    }
+
+    
 
     /**
      * Project pixel from canvas into camera space.
