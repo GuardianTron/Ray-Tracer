@@ -113,16 +113,24 @@ export default class Camera{
             let intensity = 0;
             const viewDirection = directionRay.multiplyByScalar(1);
             for(const light of lights){
-                if(!(light instanceof PointLight || light instanceof DirectionalLight ) && this.enableAmbient){
-                    intensity += light.intensity;
-                    continue;
-                }
-                const normal = intersectedShape.getNormal(intersectionPoint);
-                const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
-                const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
+                if(light.testForShadow){
+;
+                    if(light.testForShadow(intersectionPoint,shapes)) continue;
+                    const normal = intersectedShape.getNormal(intersectionPoint);
 
-                if(this.enableDiffuse) intensity += light.intensity * diffuseMultiplier;
-                if(this.enableSpecular) intensity += light.intensity * specularMultiplier;
+                    const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
+                    const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
+
+                    if(this.enableDiffuse) intensity += light.intensity * diffuseMultiplier;
+                    if(this.enableSpecular) intensity += light.intensity * specularMultiplier;
+                    
+
+                }
+                else if(this.enableAmbient){
+                    intensity += light.intensity;
+                }
+                
+
             }
             return intersectedShape.color.scaleByIntensity(intensity);
             
@@ -130,7 +138,7 @@ export default class Camera{
         }
         return null;
 
-    }
+        }
 
     /**
      * Performs test for intersection between camera ray and shapes
