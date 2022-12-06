@@ -82,6 +82,7 @@ controls.addEventListener('submit',(e)=>{
     camera.enableAmbient = controls.elements['ambient_shader'].checked;
     camera.enableDiffuse = controls.elements['diffuse_shader'].checked;
     camera.enableSpecular = controls.elements['specular_shader'].checked;
+    camera.enableShadows = controls.elements['shadows'].checked;
 
     ambientLight.intensity = Number(ambient_slider.value);
     pointLight.intensity = Number(point_slider.value);
