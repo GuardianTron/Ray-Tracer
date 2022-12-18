@@ -113,13 +113,19 @@ export default class DemoDrawBase {
 
 
     clear = () => {
+        //fix for Safari bug not properly resetting context properties
+        this.canvas.width = this.canvas.width;
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = "black";
+        this.ctx.fillStyle = "black";
+        //end fixes
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 
     redraw = () => {
         
         this._calculateSizes();
-
+        this.clear();
         this.drawNormal();
         this.drawLight(0,0);
 
