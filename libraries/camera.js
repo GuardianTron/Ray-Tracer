@@ -28,6 +28,7 @@ export default class Camera{
         this.enableAmbient = true;
         this.enableDiffuse = true;
         this.enableSpecular = true;
+        this.enableShadows = true;
     }
 
     get origin(){
@@ -99,6 +100,14 @@ export default class Camera{
         this._enableSpecular = Boolean(value);
     }
 
+    get enableShadows(){
+        return this._enableShadows;
+    }
+
+    set enableShadows(value){
+        this._enableShadows = Boolean(value);
+    }
+
     /**
      * Traces ray in camera space
      * @param {Vector3D} directionRay -- Direction ray in camera space. 
@@ -114,7 +123,7 @@ export default class Camera{
             const viewDirection = directionRay.multiplyByScalar(1);
             for(const light of lights){
                 if(light instanceof OccludableLight){
-                    if(light.testForShadow(intersectionPoint,shapes)) continue;
+                    if(this._enableShadows && light.testForShadow(intersectionPoint,shapes)) continue;
                     const normal = intersectedShape.getNormal(intersectionPoint);
 
                     const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
