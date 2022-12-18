@@ -5,6 +5,16 @@
 
 }
 
+/*
+ * Fix for Safari browsers 
+ */
+
+ #demo_container *{
+    box-sizing: content-box;
+ }
+
+ /* end fix */
+
 #canvas_container {
     max-width: 640px;
     width: 100%;
@@ -57,6 +67,7 @@
         max-width: 25rem;
         grid-template-columns:
             10rem 10rem 5rem;
+        grid-auto-rows: 1.25rem;
     }
 
     #demo_container form label {
