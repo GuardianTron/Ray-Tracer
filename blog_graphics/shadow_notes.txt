@@ -1,0 +1,17 @@
+-first, test litghting as before
+-next, test other objects to see if they occlude light
+	-each light type requires different tests
+	-ambient light represents scattered light so no shadows
+	-other two types require testing if other objects intersect light
+		-both lights use the same intersection test with objects as before, but use the point where the camera ray strikes the object as the starting point
+		-use direction vector to the light as the other coordinatre
+		-each light tests for parameter values, but tests for different ones
+		-for point light, tests that objects are between light and original object
+			-thus, values between 0 and 1. (technically a bit greater than zero to prevent point on surface from giving a positive value.)
+		-for directional light, any positive value will do
+		-note: negative values mean that object is behind the object.
+		-if intersection, simply don't apply that light's contribution and skip shader processing
+-Implementation details:
+	-decision to put sphere intersections held up
+	-to facilitate polymorphism in testing, made point and directional light subclass of occludable light. Test for this base class to determine if light needs testing
+	-each class then implements its own testing method that returns whether or not intersection occured with other objects.
