@@ -114,17 +114,18 @@ export default class Camera{
      * @param {Array[Shape]} shapes -- An array of shapes 
      * @returns Color
      */
-    traceRay(directionRay,shapes=[],lights=[]){
+    traceRay(directionRay,shapes=[],lights=[],recursionDepth = 3){
         const {tMin, intersectedShape} = this.testCameraIntersection(directionRay,shapes);
         if(intersectedShape){
             //apply lighting
             const intersectionPoint = this.origin.add(directionRay.multiplyByScalar(tMin));
             let intensity = 0;
             const viewDirection = directionRay.multiplyByScalar(1);
+            const normal = intersectedShape.getNormal(intersectionPoint);
+
             for(const light of lights){
                 if(light instanceof OccludableLight){
                     if(this._enableShadows && light.testForShadow(intersectionPoint,shapes)) continue;
-                    const normal = intersectedShape.getNormal(intersectionPoint);
 
                     const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
                     const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
@@ -140,11 +141,22 @@ export default class Camera{
                 
 
             }
-            return intersectedShape.color.scaleByIntensity(intensity);
             
+            let localColor =  intersectedShape.color.scaleByIntensity(intensity);
+            let retColor = localColor;
+            if(intersectedShape.material.reflectance > 0 && recursionDepth > 0){
+                const reflectedVector = intersectedShape.material.getReflectedVector(directionRay,normal);
+                let reflectedColor = this.traceRay(reflectedVector,shapes,lights,recursionDepth - 1);
+                const reflectance = intersectedShape.material.reflectance;
+                localColor = localColor.scaleByIntensity(1-reflectance);
+                reflectedColor = reflectedColor.scaleByIntensity(reflectance);
+                retColor = localColor.subtract(reflectedColor);
+            
+            }
+            return retColor;
 
         }
-        return null;
+        return new Color(0,0,0);
 
         }
 
