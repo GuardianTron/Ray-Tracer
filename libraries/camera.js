@@ -114,12 +114,12 @@ export default class Camera{
      * @param {Array[Shape]} shapes -- An array of shapes 
      * @returns Color
      */
-    traceRay(directionRay,shapes=[],lights=[],rayStart = null,recursionDepth = 3){
+    traceRay(directionRay,shapes=[],lights=[],rayStart = null,recursionDepth = 3,tEpsilon=1){
         if(!rayStart) rayStart = this.origin;
-        const {tMin, intersectedShape} = this.testIntersection(directionRay,rayStart,shapes);
+        const {tMin, intersectedShape} = this.testIntersection(directionRay,rayStart,shapes,tEpsilon);
         if(intersectedShape){
             //apply lighting
-            const intersectionPoint = this.origin.add(directionRay.multiplyByScalar(tMin));
+            const intersectionPoint = rayStart.add(directionRay.multiplyByScalar(tMin));
             let intensity = 0;
             const viewDirection = directionRay.multiplyByScalar(1);
             const normal = intersectedShape.getNormal(intersectionPoint);
@@ -147,7 +147,7 @@ export default class Camera{
             let retColor = localColor;
             if(intersectedShape.material.reflectance > 0 && recursionDepth > 0){
                 const reflectedVector = intersectedShape.material.getReflectedVector(viewDirection,normal);
-                let reflectedColor = this.traceRay(reflectedVector,shapes,lights,intersectionPoint,recursionDepth - 1);
+                let reflectedColor = this.traceRay(reflectedVector,shapes,lights,intersectionPoint,recursionDepth - 1,.001);
                 const reflectance = intersectedShape.material.reflectance;
                 localColor = localColor.scaleByIntensity(1-reflectance);
                 reflectedColor = reflectedColor.scaleByIntensity(reflectance);
@@ -168,14 +168,14 @@ export default class Camera{
      * @returns {Number, Shape}
      */
 
-    testIntersection(directionRay,rayStart,shapes=[]){
+    testIntersection(directionRay,rayStart,shapes=[],tEpsilon=0.001){
         //note: t >=0.001 is to stop objects from intersecting themselves.
         let tMin = Infinity;
         let intersectedShape = null;
         for( const shape of shapes){
             const ts = shape.intersectsRayAt(rayStart,directionRay);
             for( const t of ts){
-                if(t >= 0.001 && t < tMin){
+                if(t >= tEpsilon && t < tMin){
                     tMin = t;
                     intersectedShape = shape;
                 }
