@@ -273,13 +273,25 @@ class BookSpecularShader extends RTShaderBase{
         if(lightDirection.dotProduct(normal) <= 0) return 0;
         
         
-        const reflection = lightDirection.subtract(normal.multiplyByScalar(2*normal.dotProduct(lightDirection)));
+        const reflection = calculateReflectedVector(lightDirection,normal);
         const angle = Math.max(0,reflection.cosineBetween(viewDirection));
         return Math.pow(angle,this.exponent);
         
         
 
     }
+}
+
+/**
+ * Calculates the direction vector of reflected ray
+ * by reflecting the incoming vector about the normal
+ * 
+ * @param {Vector3D} incomingVector - Direction vector for incoming light.
+ * @param {Vector3D} normal - Normal vector of surface.
+ * @returns Vector3D
+ */
+function calculateReflectedVector(incomingVector,normal){
+    return incomingVector.subtract(normal.multiplyByScalar(2*normal.dotProduct(incomingVector)));
 }
 
 
