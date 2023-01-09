@@ -295,4 +295,35 @@ function calculateReflectedVector(incomingVector,normal){
 }
 
 
-export {Light,OccludableLight,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader};
+class BaseMaterial{
+
+
+    constructor(reflectance){
+        this.reflectance = reflectance;
+    }
+
+    get reflectance(){
+        return this._reflectance;
+    }
+
+    set reflectance(reflectance){
+        if(isNaN(reflectance)){
+            throw new TypeError("Reflectance must be a Number.");
+        }
+        
+        if(reflectance < 0 || reflectance > 1){
+            throw new RangeError('Reflectance must be a value of between 0 and 1 inclusive.');
+        }
+
+        this._reflectance = reflectance;
+    }
+
+    getReflectectedVector(incomingVector,normal){
+        return calculateReflectedVector(incomingVector,normal);
+    }
+
+
+}
+
+
+export {Light,OccludableLight,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader, BaseMaterial};
