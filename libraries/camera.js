@@ -114,8 +114,9 @@ export default class Camera{
      * @param {Array[Shape]} shapes -- An array of shapes 
      * @returns Color
      */
-    traceRay(directionRay,shapes=[],lights=[],recursionDepth = 3){
-        const {tMin, intersectedShape} = this.testCameraIntersection(directionRay,shapes);
+    traceRay(directionRay,shapes=[],lights=[],rayStart = null,recursionDepth = 3){
+        if(!rayStart) rayStart = this.origin;
+        const {tMin, intersectedShape} = this.testIntersection(directionRay,rayStart,shapes);
         if(intersectedShape){
             //apply lighting
             const intersectionPoint = this.origin.add(directionRay.multiplyByScalar(tMin));
@@ -145,12 +146,12 @@ export default class Camera{
             let localColor =  intersectedShape.color.scaleByIntensity(intensity);
             let retColor = localColor;
             if(intersectedShape.material.reflectance > 0 && recursionDepth > 0){
-                const reflectedVector = intersectedShape.material.getReflectedVector(directionRay,normal);
-                let reflectedColor = this.traceRay(reflectedVector,shapes,lights,recursionDepth - 1);
+                const reflectedVector = intersectedShape.material.getReflectedVector(viewDirection,normal);
+                let reflectedColor = this.traceRay(reflectedVector,shapes,lights,intersectionPoint,recursionDepth - 1);
                 const reflectance = intersectedShape.material.reflectance;
                 localColor = localColor.scaleByIntensity(1-reflectance);
                 reflectedColor = reflectedColor.scaleByIntensity(reflectance);
-                retColor = localColor.subtract(reflectedColor);
+                retColor = localColor.add(reflectedColor);
             
             }
             return retColor;
@@ -161,19 +162,20 @@ export default class Camera{
         }
 
     /**
-     * Performs test for intersection between camera ray and shapes
+     * Performs test for intersection between ray and shapes
      * @param {Vector3D} directionRay 
      * @param {Shape[]} shapes 
      * @returns {Number, Shape}
      */
 
-    testCameraIntersection(directionRay,shapes=[]){
+    testIntersection(directionRay,rayStart,shapes=[]){
+        //note: t >=0.001 is to stop objects from intersecting themselves.
         let tMin = Infinity;
         let intersectedShape = null;
         for( const shape of shapes){
-            const ts = shape.intersectsRayAt(this.origin,directionRay);
+            const ts = shape.intersectsRayAt(rayStart,directionRay);
             for( const t of ts){
-                if(t >= 1 && t < tMin){
+                if(t >= 0.001 && t < tMin){
                     tMin = t;
                     intersectedShape = shape;
                 }
