@@ -2,17 +2,21 @@
 
 import Vector3D from "./vector.js";
 import Color from "./color.js";
-import { RTShaderBase } from "./lighting.js";
+import { RTShaderBase, BaseMaterial } from "./lighting.js";
 
  class Shape{
 
-    constructor(diffuseShader=null,specularShader=null){
+    constructor(diffuseShader=null,specularShader=null,material=null){
         if(!diffuseShader){
             diffuseShader = new RTShaderBase();
         }
 
         if(!specularShader){
             specularShader = new RTShaderBase();
+        }
+
+        if(!material){
+            material = new BaseMaterial(0);
         }
         this.diffuse = diffuseShader;
         this.specular = specularShader;
@@ -38,6 +42,17 @@ import { RTShaderBase } from "./lighting.js";
             throw new TypeError("Shaders must be an instance of RTShaderBase");
         }
         this._specularShader = shader;
+    }
+
+    get material(){
+        return this._material;
+    }
+
+    set material(material){
+        if(!(material instanceof BaseMaterial)){
+            throw new TypeError("Materials must be an instace of BaseMaterial");
+        }
+        this._material = material;
     }
 
     /**
@@ -67,8 +82,8 @@ import { RTShaderBase } from "./lighting.js";
      * @param {Color} color -- The object's color.
      */
 
-    constructor(center,radius,color,diffuseShader = null, specularShader = null){
-        super(diffuseShader,specularShader);
+    constructor(center,radius,color,diffuseShader = null, specularShader = null, material=null){
+        super(diffuseShader,specularShader,material);
         this.center = center;
         this.radius = radius;
         this.color = color;
