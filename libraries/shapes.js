@@ -20,6 +20,7 @@ import { RTShaderBase, BaseMaterial } from "./lighting.js";
         }
         this.diffuse = diffuseShader;
         this.specular = specularShader;
+        this.material = material;
     }
 
     get diffuse(){
