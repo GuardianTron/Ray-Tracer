@@ -318,7 +318,7 @@ class BaseMaterial{
         this._reflectance = reflectance;
     }
 
-    getReflectectedVector(incomingVector,normal){
+    getReflectedVector(incomingVector,normal){
         return calculateReflectedVector(incomingVector,normal);
     }
 
