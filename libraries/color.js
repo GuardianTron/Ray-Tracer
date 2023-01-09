@@ -71,19 +71,39 @@ export class Color{
         
     }
 
+    add(color){
+        const r = this._clampChannel(this.r + color.r);
+        const g = this._clampChannel(this.g + color.g);
+        const b = this._clampChannel(this.b + color.b);
+        return new Color(r,g,b);
+    }
+
+    subtract(color){
+        const r = this._clampChannel(this.r - color.r);
+        const g = this._clampChannel(this.g - color.g);
+        const b = this._clampChannel(this.b - color.b);
+        return new Color(r,g,b);
+    }
+
     /**
      * Ensures that scaling produces an integer between 0 and 255
      * @param {Number} intensity 
      * @param {Number} channel 
-     * @returns 
+     * @returns Number
      */
 
     _scaleChannelByIntensity(intensity,channel){
-        let scaled = intensity * channel;
+        const scaled = intensity * channel;
         //ensure channel is integer between 0 and 255;
-        scaled = Math.max(0,scaled);
-        scaled = Math.min(255,scaled);
-        return Math.round(scaled);
+        return this._clampChannel(scaled);
+    }
+
+
+
+    _clampChannel(channel){
+        let clamped = Math.max(0,channel);
+        clamped = Math.min(255,clamped);
+        return Math.round(clamped);
     }
 }
 
