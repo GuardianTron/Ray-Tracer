@@ -1,5 +1,5 @@
 "use strict";
-import { Shape } from "./shapes.js";
+import { Shape, ShapeContainer } from "./shapes.js";
 import { Vector3D } from "./vector.js";
 import { Color } from "./color.js";
 import { Light,OccludableLight} from "./lighting.js";
@@ -25,6 +25,7 @@ export default class Camera{
         this.width = width;
         this.height = height;
         this.distance = distance;
+        this._shapeContainer = new ShapeContainer();
         this.enableAmbient = true;
         this.enableDiffuse = true;
         this.enableSpecular = true;
@@ -108,15 +109,23 @@ export default class Camera{
         this._enableShadows = Boolean(value);
     }
 
+    addShape(shape){
+        this._shapeContainer.addShape(shape)
+    }
+
+    traceRay(directionRay,lights=[],recursionDepth=3){
+        return this._traceRay(directionRay,lights,this.origin,recursionDepth,1);
+    }
+
     /**
      * Traces ray in camera space
      * @param {Vector3D} directionRay -- Direction ray in camera space. 
      * @param {Array[Shape]} shapes -- An array of shapes 
      * @returns Color
      */
-    traceRay(directionRay,shapes=[],lights=[],rayStart = null,recursionDepth = 3,tEpsilon=1){
-        if(!rayStart) rayStart = this.origin;
-        const {tMin, intersectedShape} = this.testIntersection(directionRay,rayStart,shapes,tEpsilon);
+    _traceRay(directionRay,lights=[],rayStart = null,recursionDepth = 3,tEpsilon=1){
+        const {tMin, intersectedShape} = this._shapeContainer.closestIntersectionWithRay(rayStart,directionRay,tEpsilon);
+ 
         if(intersectedShape){
             //apply lighting
             const intersectionPoint = rayStart.add(directionRay.multiplyByScalar(tMin));
@@ -126,7 +135,7 @@ export default class Camera{
 
             for(const light of lights){
                 if(light instanceof OccludableLight){
-                    if(this._enableShadows && light.testForShadow(intersectionPoint,shapes)) continue;
+                    if(this._enableShadows && light.testForShadow(intersectionPoint,this._shapeContainer._shapes)) continue;
 
                     const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
                     const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
@@ -147,7 +156,7 @@ export default class Camera{
             let retColor = localColor;
             if(intersectedShape.material.reflectance > 0 && recursionDepth > 0){
                 const reflectedVector = intersectedShape.material.getReflectedVector(viewDirection,normal);
-                let reflectedColor = this.traceRay(reflectedVector,shapes,lights,intersectionPoint,recursionDepth - 1,.001);
+                let reflectedColor = this._traceRay(reflectedVector,lights,intersectionPoint,recursionDepth - 1,.001);
                 const reflectance = intersectedShape.material.reflectance;
                 localColor = localColor.scaleByIntensity(1-reflectance);
                 reflectedColor = reflectedColor.scaleByIntensity(reflectance);
@@ -160,31 +169,6 @@ export default class Camera{
         return new Color(0,0,0);
 
         }
-
-    /**
-     * Performs test for intersection between ray and shapes
-     * @param {Vector3D} directionRay 
-     * @param {Shape[]} shapes 
-     * @returns {Number, Shape}
-     */
-
-    testIntersection(directionRay,rayStart,shapes=[],tEpsilon=0.001){
-        //note: t >=0.001 is to stop objects from intersecting themselves.
-        let tMin = Infinity;
-        let intersectedShape = null;
-        for( const shape of shapes){
-            const ts = shape.intersectsRayAt(rayStart,directionRay);
-            for( const t of ts){
-                if(t >= tEpsilon && t < tMin){
-                    tMin = t;
-                    intersectedShape = shape;
-                }
-            }
-        }
-        return {tMin: tMin, intersectedShape: intersectedShape};
-    }
-
-    
 
     /**
      * Project pixel from canvas into camera space.
@@ -218,9 +202,9 @@ export default class Camera{
      * @param { Array[Shapes}  shapes 
      * @returns Color
      */
-    getPixelColor = (x,y,canvasWidth,canvasHeight,shapes=[],lights=[])=>{
+    getPixelColor = (x,y,canvasWidth,canvasHeight,lights=[])=>{
         const viewportRay = this.canvasToViewPort(x,y,canvasWidth,canvasHeight);
-        return this.traceRay(viewportRay,shapes,lights);
+        return this.traceRay(viewportRay,lights);
     }
 
 

@@ -181,17 +181,23 @@ import { RTShaderBase, BaseMaterial } from "./lighting.js";
         this._shapes.push(shape);
     }
 
+    clear(){
+        this._shapes = [];
+    }
+
     closestIntersectionWithRay(origin,direction,tEpsilon=0.001){
         let tMin = Infinity;
         let closestShape = null;
         for(const shape of this._shapes){
-            const t = shape.intersectsRayAt(origin,direction);
-            if(t >= tEpsilon && t < tMin){
-                tMin = t;
-                closestShape = shape;
+            const ts = shape.intersectsRayAt(origin,direction);
+            for(const t of ts){
+                if(t >= tEpsilon && t < tMin){
+                    tMin = t;
+                    closestShape = shape;
+                }
             }
         }
-        return {tMin: tMin, interceptedShape: closestShape};
+        return {tMin: tMin, intersectedShape: closestShape};
     }
 
  }
