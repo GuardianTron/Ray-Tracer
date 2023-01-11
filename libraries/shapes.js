@@ -169,4 +169,30 @@ import { RTShaderBase, BaseMaterial } from "./lighting.js";
 
     
  }
- export {Shape,Sphere};
+
+ class ShapeContainer{
+
+    constructor(){
+        this._shapes = [];
+    }
+
+    addShape(shape){
+        if(!(shape instanceof Shape)) throw new TypeError("Only objects of type Shape may be added.");
+        this._shapes.push(shape);
+    }
+
+    closestIntersectionWithRay(origin,direction,tEpsilon=0.001){
+        let tMin = Infinity;
+        let closestShape = null;
+        for(const shape of this._shapes){
+            const t = shape.intersectsRayAt(origin,direction);
+            if(t >= tEpsilon && t < tMin){
+                tMin = t;
+                closestShape = shape;
+            }
+        }
+        return {tMin: tMin, interceptedShape: closestShape};
+    }
+
+ }
+ export {Shape,Sphere, ShapeContainer};
