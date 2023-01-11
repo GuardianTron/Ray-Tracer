@@ -135,7 +135,7 @@ export default class Camera{
 
             for(const light of lights){
                 if(light instanceof OccludableLight){
-                    if(this._enableShadows && light.testForShadow(intersectionPoint,this._shapeContainer._shapes)) continue;
+                    if(this._enableShadows && light.testForShadow(intersectionPoint,this._shapeContainer)) continue;
 
                     const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
                     const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);

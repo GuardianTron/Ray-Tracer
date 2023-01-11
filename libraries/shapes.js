@@ -200,5 +200,17 @@ import { RTShaderBase, BaseMaterial } from "./lighting.js";
         return {tMin: tMin, intersectedShape: closestShape};
     }
 
+    [Symbol.iterator](){
+        let i = 0;
+        return {
+            next: ()=>{
+                return {
+                    value: this._shapes[i++],
+                    done: (i >= this._shapes.length)
+                }
+            }
+        }
+    }
+
  }
  export {Shape,Sphere, ShapeContainer};
