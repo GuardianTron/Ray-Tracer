@@ -200,6 +200,17 @@ import { RTShaderBase, BaseMaterial } from "./lighting.js";
         return {tMin: tMin, intersectedShape: closestShape};
     }
 
+    testRayIntersection(origin,direction,tMax,tEpsilon = 0.001){
+
+        for(const shape of this._shapes){
+            const ts = shape.intersectsRayAt(origin,direction);
+            for(const t of ts){
+                if(t > tEpsilon && t < tMax) return true;
+            }
+        }
+        return false;
+    }
+
     [Symbol.iterator](){
         let i = 0;
         return {

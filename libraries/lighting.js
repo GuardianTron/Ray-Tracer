@@ -106,22 +106,11 @@ class PointLight extends OccludableLight{
 
     }
 
-    testForShadow(intersectionPoint,shapes=[]){
-        let intersectsShape = false;
+    testForShadow(intersectionPoint,shapes){
+
         const direction = this.getDirection(intersectionPoint);
-        for( const shape of shapes){
-            const intersectionParams = shape.intersectsRayAt(intersectionPoint,direction);
-            for(const intersection of intersectionParams){
-                
-                if(intersection >= EPSILON && intersection < 1){
-                        
-                    intersectsShape = true;
-                    break;
-                }
-            }
-            
-        }
-        return intersectsShape;
+        return shapes.testRayIntersection(intersectionPoint,direction,1);
+
     }
 
 }
@@ -154,21 +143,11 @@ class DirectionalLight extends OccludableLight{
     }
 
 
-    testForShadow(intersectionPoint,shapes=[]){
+    testForShadow(intersectionPoint,shapes){
 
-        let intersectsShape = false;
 
-        for(const shape of shapes){
-            const intersectionParams = shape.intersectsRayAt(intersectionPoint,this.direction);
-            for( const intersection of intersectionParams){
-
-                if(intersection >= EPSILON && intersection < Infinity){
-                    intersectsShape = true;
-                    break;
-                }
-            }
-        }
-        return intersectsShape;
+        return shapes.testRayIntersection(intersectionPoint,this.direction,Infinity);
+s
     }
 
 }
