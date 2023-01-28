@@ -25,7 +25,6 @@ export default class Camera{
         this.width = width;
         this.height = height;
         this.distance = distance;
-        this._shapeContainer = new ShapeContainer();
         this.enableAmbient = true;
         this.enableDiffuse = true;
         this.enableSpecular = true;
@@ -109,12 +108,8 @@ export default class Camera{
         this._enableShadows = Boolean(value);
     }
 
-    addShape(shape){
-        this._shapeContainer.addShape(shape)
-    }
-
-    traceRay(directionRay,lights=[],recursionDepth=3){
-        return this._traceRay(directionRay,lights,this.origin,recursionDepth,1);
+    traceRay(directionRay,shapeContainer, lights=[],recursionDepth=3){
+        return this._traceRay(directionRay,shapeContainer, lights,this.origin,recursionDepth,1);
     }
 
     /**
@@ -123,8 +118,8 @@ export default class Camera{
      * @param {Array[Shape]} shapes -- An array of shapes 
      * @returns Color
      */
-    _traceRay(directionRay,lights=[],rayStart = null,recursionDepth = 3,tEpsilon=1){
-        const {tMin, intersectedShape} = this._shapeContainer.closestIntersectionWithRay(rayStart,directionRay,tEpsilon);
+    _traceRay(directionRay,shapeContainer,lights=[],rayStart = null,recursionDepth = 3,tEpsilon=1){
+        const {tMin, intersectedShape} = shapeContainer.closestIntersectionWithRay(rayStart,directionRay,tEpsilon);
  
         if(intersectedShape){
             //apply lighting
@@ -135,7 +130,7 @@ export default class Camera{
 
             for(const light of lights){
                 if(light instanceof OccludableLight){
-                    if(this._enableShadows && light.testForShadow(intersectionPoint,this._shapeContainer)) continue;
+                    if(this._enableShadows && light.testForShadow(intersectionPoint,shapeContainer)) continue;
 
                     const diffuseMultiplier =  intersectedShape.diffuse.evaluate(light,intersectionPoint,normal);
                     const specularMultiplier = intersectedShape.specular.evaluate(light,intersectionPoint,normal,viewDirection);
@@ -156,7 +151,7 @@ export default class Camera{
             let retColor = localColor;
             if(intersectedShape.material.reflectance > 0 && recursionDepth > 0){
                 const reflectedVector = intersectedShape.material.getReflectedVector(viewDirection,normal);
-                let reflectedColor = this._traceRay(reflectedVector,lights,intersectionPoint,recursionDepth - 1,.001);
+                let reflectedColor = this._traceRay(reflectedVector,shapeContainer,lights,intersectionPoint,recursionDepth - 1,.001);
                 const reflectance = intersectedShape.material.reflectance;
                 localColor = localColor.scaleByIntensity(1-reflectance);
                 reflectedColor = reflectedColor.scaleByIntensity(reflectance);
@@ -202,9 +197,9 @@ export default class Camera{
      * @param { Array[Shapes}  shapes 
      * @returns Color
      */
-    getPixelColor = (x,y,canvasWidth,canvasHeight,lights=[])=>{
+    getPixelColor = (x,y,canvasWidth,canvasHeight,shapeContainer,lights=[])=>{
         const viewportRay = this.canvasToViewPort(x,y,canvasWidth,canvasHeight);
-        return this.traceRay(viewportRay,lights);
+        return this.traceRay(viewportRay,shapeContainer,lights);
     }
 
 
