@@ -29,6 +29,7 @@ export default class Camera{
         this.enableDiffuse = true;
         this.enableSpecular = true;
         this.enableShadows = true;
+        this.recursionDepth = 3;
     }
 
     get origin(){
@@ -106,6 +107,20 @@ export default class Camera{
 
     set enableShadows(value){
         this._enableShadows = Boolean(value);
+    }
+
+    get recursionDepth(){
+        return this._recursionDepth;
+    }
+
+    set recursionDepth(depth){
+        if(isNaN(depth)){
+            throw new TypeError("Recursion depth must be a number.");
+        }
+        if(depth < 0){
+            throw new RangeError("Recursion depth must be zero or greater.");
+        }
+        this._recursionDepth = depth;
     }
 
     traceRay(directionRay,shapeContainer, lights=[],recursionDepth=3){
@@ -199,7 +214,7 @@ export default class Camera{
      */
     getPixelColor = (x,y,canvasWidth,canvasHeight,shapeContainer,lights=[])=>{
         const viewportRay = this.canvasToViewPort(x,y,canvasWidth,canvasHeight);
-        return this.traceRay(viewportRay,shapeContainer,lights);
+        return this.traceRay(viewportRay,shapeContainer,lights,this.recursionDepth);
     }
 
 
