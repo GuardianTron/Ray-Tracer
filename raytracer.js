@@ -37,6 +37,7 @@ const distance_slider = controls.elements['distance'];
 const ambient_slider = controls.elements['ambient_light'];
 const point_slider = controls.elements['point_light'];
 const directional_slider = controls.elements['directional_light'];
+const recursion_depth_slider = controls.elements['recursion_depth'];
 
 
 width_slider.addEventListener('input',slideHandlerMaker('view_width_out'));
@@ -47,6 +48,8 @@ ambient_slider.addEventListener('input',slideHandlerMaker('ambient_light_out'));
 point_slider.addEventListener('input',slideHandlerMaker('point_light_out'));
 directional_slider.addEventListener('input',slideHandlerMaker('directional_light_out'));
 
+recursion_depth_slider.addEventListener('input',slideHandlerMaker('recursion_depth_out'));
+
 window.addEventListener('load',(event)=>{
     document.getElementById('view_width_out').value = width_slider.value;
     document.getElementById('view_height_out').value = height_slider.value;
@@ -55,6 +58,8 @@ window.addEventListener('load',(event)=>{
     document.getElementById('ambient_light_out').value = ambient_slider.value;
     document.getElementById('point_light_out').value = point_slider.value;
     document.getElementById('directional_light_out').value = directional_slider.value;
+
+    document.getElementById('recursion_depth_out').value = recursion_depth_slider.value;
 
     //create square canvas with same width as parent container
     const size = canvas.parentElement.offsetWidth;
@@ -78,6 +83,7 @@ controls.addEventListener('submit',(e)=>{
     camera.viewWidth = Number(controls.elements['view_width'].value);
     camera.viewHeight = Number(controls.elements['view_height'].value);
     camera.distance = Number(controls.elements['distance'].value);
+    camera.recursionDepth = Number(controls.elements['recursion_depth'].value);
 
     camera.enableAmbient = controls.elements['ambient_shader'].checked;
     camera.enableDiffuse = controls.elements['diffuse_shader'].checked;

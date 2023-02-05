@@ -34,6 +34,10 @@
                     <label for="specular_shader">Specular</label><input type="checkbox" name="specular_shader" checked>
                     <label for="shadows">Enable Shadows?</lavel><input type="checkbox" name="shadows" checked>
                 </fieldset>
+                <fieldset>
+                    <legend>Reflections</legend>
+                    <label for="recursion_depth">Recursion Depth</label><input name="recursion_depth" type="range" min="0" max="10" step="1" value="3"> <output id="recursion_depth_out"><output></output>
+                </fieldset>
                     <div><label for="animate">Animate?</label><input type="checkbox" name="animate" checked ></div>
 
                     <button form_id="config" id="render_btn">Render</button>
