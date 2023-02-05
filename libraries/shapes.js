@@ -2,11 +2,11 @@
 
 import Vector3D from "./vector.js";
 import Color from "./color.js";
-import { RTShaderBase } from "./lighting.js";
+import { RTShaderBase, BaseMaterial } from "./lighting.js";
 
  class Shape{
 
-    constructor(diffuseShader=null,specularShader=null){
+    constructor(diffuseShader=null,specularShader=null,material=null){
         if(!diffuseShader){
             diffuseShader = new RTShaderBase();
         }
@@ -14,8 +14,13 @@ import { RTShaderBase } from "./lighting.js";
         if(!specularShader){
             specularShader = new RTShaderBase();
         }
+
+        if(!material){
+            material = new BaseMaterial(0);
+        }
         this.diffuse = diffuseShader;
         this.specular = specularShader;
+        this.material = material;
     }
 
     get diffuse(){
@@ -38,6 +43,17 @@ import { RTShaderBase } from "./lighting.js";
             throw new TypeError("Shaders must be an instance of RTShaderBase");
         }
         this._specularShader = shader;
+    }
+
+    get material(){
+        return this._material;
+    }
+
+    set material(material){
+        if(!(material instanceof BaseMaterial)){
+            throw new TypeError("Materials must be an instace of BaseMaterial");
+        }
+        this._material = material;
     }
 
     /**
@@ -67,8 +83,8 @@ import { RTShaderBase } from "./lighting.js";
      * @param {Color} color -- The object's color.
      */
 
-    constructor(center,radius,color,diffuseShader = null, specularShader = null){
-        super(diffuseShader,specularShader);
+    constructor(center,radius,color,diffuseShader = null, specularShader = null, material=null){
+        super(diffuseShader,specularShader,material);
         this.center = center;
         this.radius = radius;
         this.color = color;
@@ -153,4 +169,59 @@ import { RTShaderBase } from "./lighting.js";
 
     
  }
- export {Shape,Sphere};
+
+ class ShapeContainer{
+
+    constructor(){
+        this._shapes = [];
+    }
+
+    addShape(shape){
+        if(!(shape instanceof Shape)) throw new TypeError("Only objects of type Shape may be added.");
+        this._shapes.push(shape);
+    }
+
+    clear(){
+        this._shapes = [];
+    }
+
+    closestIntersectionWithRay(origin,direction,tEpsilon=0.001){
+        let tMin = Infinity;
+        let closestShape = null;
+        for(const shape of this._shapes){
+            const ts = shape.intersectsRayAt(origin,direction);
+            for(const t of ts){
+                if(t >= tEpsilon && t < tMin){
+                    tMin = t;
+                    closestShape = shape;
+                }
+            }
+        }
+        return {tMin: tMin, intersectedShape: closestShape};
+    }
+
+    testRayIntersection(origin,direction,tMax,tEpsilon = 0.001){
+
+        for(const shape of this._shapes){
+            const ts = shape.intersectsRayAt(origin,direction);
+            for(const t of ts){
+                if(t > tEpsilon && t < tMax) return true;
+            }
+        }
+        return false;
+    }
+
+    [Symbol.iterator](){
+        let i = 0;
+        return {
+            next: ()=>{
+                return {
+                    value: this._shapes[i++],
+                    done: (i >= this._shapes.length)
+                }
+            }
+        }
+    }
+
+ }
+ export {Shape,Sphere, ShapeContainer};

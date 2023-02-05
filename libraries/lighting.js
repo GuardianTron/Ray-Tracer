@@ -106,6 +106,7 @@ class PointLight extends OccludableLight{
 
     }
 
+<<<<<<< HEAD
     testForShadow(intersectionPoint,shapes=[]){
         let intersectsShape = false;
         const direction = this.getDirection(intersectionPoint);
@@ -122,6 +123,13 @@ class PointLight extends OccludableLight{
             
         }
         return intersectsShape;
+=======
+    testForShadow(intersectionPoint,shapes){
+
+        const direction = this.getDirection(intersectionPoint);
+        return shapes.testRayIntersection(intersectionPoint,direction,1);
+
+>>>>>>> master
     }
 
 }
@@ -154,6 +162,7 @@ class DirectionalLight extends OccludableLight{
     }
 
 
+<<<<<<< HEAD
     testForShadow(intersectionPoint,shapes=[]){
 
         let intersectsShape = false;
@@ -169,6 +178,13 @@ class DirectionalLight extends OccludableLight{
             }
         }
         return intersectsShape;
+=======
+    testForShadow(intersectionPoint,shapes){
+
+
+        return shapes.testRayIntersection(intersectionPoint,this.direction,Infinity);
+s
+>>>>>>> master
     }
 
 }
@@ -273,7 +289,7 @@ class BookSpecularShader extends RTShaderBase{
         if(lightDirection.dotProduct(normal) <= 0) return 0;
         
         
-        const reflection = lightDirection.subtract(normal.multiplyByScalar(2*normal.dotProduct(lightDirection)));
+        const reflection = calculateReflectedVector(lightDirection,normal);
         const angle = Math.max(0,reflection.cosineBetween(viewDirection));
         return Math.pow(angle,this.exponent);
         
@@ -282,5 +298,52 @@ class BookSpecularShader extends RTShaderBase{
     }
 }
 
+/**
+ * Calculates the direction vector of reflected ray
+ * by reflecting the incoming vector about the normal
+ * 
+ * @param {Vector3D} incomingVector - Direction vector for incoming light.
+ * @param {Vector3D} normal - Normal vector of surface.
+ * @returns Vector3D
+ */
+function calculateReflectedVector(incomingVector,normal){
+    return incomingVector.subtract(normal.multiplyByScalar(2*normal.dotProduct(incomingVector)));
+}
 
+<<<<<<< HEAD
 export {Light,OccludableLight,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader};
+=======
+
+class BaseMaterial{
+
+
+    constructor(reflectance){
+        this.reflectance = reflectance;
+    }
+
+    get reflectance(){
+        return this._reflectance;
+    }
+
+    set reflectance(reflectance){
+        if(isNaN(reflectance)){
+            throw new TypeError("Reflectance must be a Number.");
+        }
+        
+        if(reflectance < 0 || reflectance > 1){
+            throw new RangeError('Reflectance must be a value of between 0 and 1 inclusive.');
+        }
+
+        this._reflectance = reflectance;
+    }
+
+    getReflectedVector(incomingVector,normal){
+        return calculateReflectedVector(incomingVector,normal);
+    }
+
+
+}
+
+
+export {Light,OccludableLight,PointLight,DirectionalLight,RTShaderBase,BookDiffuseShader, BookSpecularShader, BaseMaterial};
+>>>>>>> master

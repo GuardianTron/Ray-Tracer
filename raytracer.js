@@ -4,7 +4,7 @@ import { Vector3D } from "./libraries/vector.js";
 import { Color } from "./libraries/color.js";
 import { Camera } from "./libraries/camera.js";
 import { Rasterizer } from "./libraries/rasterizer.js";
-import { Light, PointLight, DirectionalLight, BookDiffuseShader, BookSpecularShader} from "./libraries/lighting.js";
+import { Light, PointLight, DirectionalLight, BookDiffuseShader, BookSpecularShader,BaseMaterial} from "./libraries/lighting.js";
 
 
 
@@ -105,6 +105,7 @@ function setUpDemo(){
         camera.viewWidth = Number(controls.elements['view_width'].value);
         camera.viewHeight = Number(controls.elements['view_height'].value);
         camera.distance = Number(controls.elements['distance'].value);
+        camera.recursionDepth = Number(controls.elements['recursion_depth'].value);
 
         camera.enableAmbient = controls.elements['ambient_shader'].checked;
         camera.enableDiffuse = controls.elements['diffuse_shader'].checked;

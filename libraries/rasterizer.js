@@ -1,5 +1,7 @@
 "use strict";
 
+import { ShapeContainer } from "./shapes.js";
+
 /**
  * Responsible for rasterizing the scene to canvas
  */
@@ -18,6 +20,10 @@ export class Rasterizer{
         this.canvas = canvasElement;
         this.context = this.canvas.getContext('2d');
         this.camera = camera;
+        this.shapes = new ShapeContainer();
+        for(const shape of shapes){
+            this.shapes.addShape(shape);
+        }
         this.reset();
     }
 
