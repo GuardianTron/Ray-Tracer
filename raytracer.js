@@ -24,7 +24,6 @@ function getScriptDirectory(){
     return url.substring(0,lastSlashIndex+1);
 }
 
-<<<<<<< HEAD
 async function loadDemo(url){
     const demoHolder = document.getElementById('demo_container');
     try{
@@ -36,12 +35,6 @@ async function loadDemo(url){
     catch(error){
         demoHolder.innerHTML = "<p>Unfortunately, there was an error loading the demo.</p>"
         console.error(error);
-=======
-    camera.enableAmbient = controls.elements['ambient_shader'].checked;
-    camera.enableDiffuse = controls.elements['diffuse_shader'].checked;
-    camera.enableSpecular = controls.elements['specular_shader'].checked;
-    camera.enableShadows = controls.elements['shadows'].checked;
->>>>>>> ed47aad (Added code to control whether or not shadows are enabled.)
 
     }
 
@@ -116,6 +109,7 @@ function setUpDemo(){
         camera.enableAmbient = controls.elements['ambient_shader'].checked;
         camera.enableDiffuse = controls.elements['diffuse_shader'].checked;
         camera.enableSpecular = controls.elements['specular_shader'].checked;
+        camera.enableShadows = controls.elements['shadows'].checked;
     
         ambientLight.intensity = Number(ambient_slider.value);
         pointLight.intensity = Number(point_slider.value);
